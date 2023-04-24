@@ -1,7 +1,14 @@
 <!DOCTYPE html>
-<html lang="ja">
 
+<html lang="ja">
 <head>
+    <% var name = '小宮'; %>
+    <%# name = 'soburi'; %>
+    <% var iconpath = '/images/noimage.png'; %>
+    <%# iconpath = '/images/icon.png'; %>
+    <% var profile = 'ここにプロフィール'; %>
+    <%# profile = '高専生の端くれ.情報系学科.<br>アークナイツが好き.'; %>
+
     <meta charset="utf-8">
     <title>soburiLog.</title>
     <link href="/css/style.css" rel="stylesheet">
@@ -20,7 +27,7 @@
             <a href="index.html#header">soburiLog.<img src="/images/logo.png" alt="sitelogo" class="logo"></a>
         </h1>
         <div class = "header-manu">
-            <a href="a" onclick="showQiita();return false;">tech</a>
+            <a href="" onclick="showQiita();return false;">tech</a>
             <a href="a">book</a>
             <a href="a">anime</a>
             <a href="a">game</a>   
@@ -38,16 +45,16 @@
         <!--真ん中と右のコンテンツ-->
         <div class="main">
             <div class="main-content" id="main-content">
-                <script src="insert.js"></script>
+                <script src="/../insert.js"></script>
                 <p>a</p>
             </div>
 
             <!--右-->
             <div class="rightside">
                 <div class="info">
-                    <img src="/images/icon.png" alt="soburiillust" class="soburi">
-                    <p class="name">そぶり</p>
-                    <p class="profile">高専生の端くれ.情報系学科.<br>アークナイツが好き.</p>
+                    <img src="<%= iconpath %>" alt="soburiillust" class="soburi">
+                    <p class="name"><%= name %></p>
+                    <p class="profile"><%- profile %></p>
                     <div class="link">
                         <i class="fa-solid fa-envelope" style="color:white"></i>
                         <span>591959ant@gmail.com</span>
@@ -71,11 +78,11 @@
                 data-chrome="nofooter noheader transparent noscrollbar"
                 data-height=450vh
                 data-width=100vw
-                >Tweets by burisoburi</a> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                >Tweets by burisoburi</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
             </div>
         </div>
         <footer></footer>
-        <script src="logoChange.js"></script>
+        <script src="/../logoChange.js"></script>
         
 </body>
 
