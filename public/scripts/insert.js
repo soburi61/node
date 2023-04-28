@@ -1,4 +1,5 @@
 //loadContent("contents/test.html");
+showQiita();
 function loadContent(url){
     const mainContent = document.getElementById('main-content');
     fetch(url)
