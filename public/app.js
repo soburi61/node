@@ -5,7 +5,7 @@ app.get('/top',(req,res) => {
     res.render('top.ejs');
 });
 
-app.get('/index',(req,res) => {
+app.get('/',(req,res) => {
     res.render('index.ejs');
 });
 

@@ -1,0 +1,19 @@
+html {
+    font-size: 20px;
+    font-family: "Consolas", "メイリオ";
+    background-color: #000000;
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background-color: #24292f;
+    padding: 0;
+    border: 0 solid #24292f;
+    min-height: 100vh;
+}
+h1 {
+    font-size: 0;
+    margin: 0;
+    padding: 0;
+    color:red;
+}
