@@ -8,10 +8,14 @@
     <%# iconpath = '/images/icon.png'; %>
     <% var profile = 'ここにプロフィール'; %>
     <%# profile = '高専生の端くれ.情報系学科.<br>アークナイツが好き.'; %>
+    <% var logo = ""; %>
+    <%# var logo = "/images/logo.png"; %>
+    <% var tweet = ""; %>
+    <%# var tweet = "https://platform.twitter.com/widgets.js"; %>
 
     <meta charset="utf-8">
     <title>soburiLog.</title>
-    <link href="css/style.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP" rel="stylesheet">
     <meta name="author" content="Soburi">
     <meta name="description" content="Soburi's homepage">
@@ -24,7 +28,7 @@
     <!-- タイトル -->
     <header id="header">
         <h1>
-            <a href="index#header">soburiLog.<img src="/images/logo.png" alt="sitelogo" class="logo"></a>
+            <a href="index#header">soburiLog.<img src=<%= logo %> alt="sitelogo" class="logo"></a>
         </h1>
         <div class = "header-manu">
             <a href="" onclick="showQiita();return false;">tech</a>
@@ -77,7 +81,7 @@
                 data-chrome="nofooter noheader transparent noscrollbar"
                 data-height=450vh
                 data-width=100vw
-                >Tweets by burisoburi</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                >Tweets by burisoburi</a><script async src=<%= tweet %> charset="utf-8"></script>
             </div>
         </div>
         <footer></footer>

@@ -1,12 +1,10 @@
 const express = require('express');
 const app = express();
 app.use(express.static('public'));
-app.get('/top',(req,res) => {
-    res.render('top.ejs');
-});
 
-app.get('/',(req,res) => {
+
+app.get('/index',(req,res) => {
     res.render('index.ejs');
 });
-
-app.listen(3000);
+console.log('10.133.90.88:3000/index')
+app.listen(3000,'10.133.90.88');
