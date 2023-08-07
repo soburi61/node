@@ -1,40 +1,47 @@
+*{
+    box-sizing: border-box;
+}
 html {
     font-size: 20px;
     font-family: "Consolas", "メイリオ";
-    box-sizing: border-box;
-}
-header {
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    padding: 10px 0;
 }
 body {
     margin: 0;
-    padding: 10px 0;
+    padding: 0px 0;
     border: 0 solid #24292f;
     min-height: 100vh;
 }
-nav ul {
-    list-style: none;
-    padding: 0;
+header {
+    margin:0;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 }
 
-nav ul li {
-    display: inline;
-    margin-right: 20px;
-}
 
-nav ul li.logo {
+.logo a{
+    display:block;
+    margin-left:1vw;
+    margin-right: auto;
     font-size: 24px;
     font-weight: bold;
-    margin-left: auto; /* ロゴを右端に寄せるためにmargin-rightをautoに設定 */
-}
-
-nav ul li a {
     color: #fff;
     text-decoration: none;
 }
+.menu-group {
+    list-style: none;
+    display:flex;
+}
+.menu-item {
+    margin:0 2vw;
+    display:block;
+    color: #fff;
+    text-decoration: none;
+}
+
 
 main {
     margin: 20px;
@@ -54,6 +61,7 @@ table th, table td {
     border: 1px solid #ccc;
     padding: 10px;
     text-align: center;
+    height:10vh;
 }
 
 table th {
