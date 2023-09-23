@@ -1,7 +1,22 @@
 const express = require('express');
 const app = express();
 app.use(express.static('public'));
-const mysql = require('mysql');
+const mysql = require('mysql2');
+
+const connection = mysql.createConnection({
+  host: 'localhost',  // ホスト名
+  user: 'root',
+  password: '13919139aquqas',
+  database: 'timetables',
+});
+
+connection.connect((err) => {
+  if (err) {
+    console.error('データベースに接続できませんでした。', err);
+  } else {
+    console.log('データベースに接続しました。');
+  }
+});
 
 app.get('/',(req,res) => {
     res.render('top.ejs');
