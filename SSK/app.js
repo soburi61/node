@@ -7,7 +7,7 @@ const connection = mysql.createConnection({
   host: 'localhost',  // ホスト名
   user: 'root',
   password: '13919139aquqas',
-  database: 'timetables',
+  database: 'ssk',
 });
 
 connection.connect((err) => {
@@ -18,10 +18,20 @@ connection.connect((err) => {
   }
 });
 
-app.get('/',(req,res) => {
-    res.render('top.ejs');
+app.get('/', (req, res) => {
+  // データベースから科目情報を取得
+  connection.query('SELECT * FROM subjects', (err, results) => {
+    if (err) {
+      console.error('データベースからデータを取得できませんでした。', err);
+      // エラー処理
+    } else {
+      // 取得したデータを変数に格納
+      const subjectsData = results;
+      // EJSファイルをレンダリングしてデータを渡す
+      res.render('top.ejs', { subjects: subjectsData });
+    }
+  });
 });
-
 
 //卒検PC
 //console.log('10.133.90.88:3000/');
