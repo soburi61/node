@@ -12,44 +12,54 @@ connection.connect((err) => {
     console.error('データベースに接続できませんでした。', err);
   } else {
     console.log('データベースに接続しました。');
-    
-    // テーブルの中身を初期化するSQLクエリを実行
 
-    const truncateSubjects = 'TRUNCATE TABLE subjects';
-    connection.query(truncateSubjects, (err, results) => {
+    // トランザクションを開始
+    connection.beginTransaction((err) => {
       if (err) {
-        console.error('subjectsテーブルのデータ初期化中にエラーが発生しました。', err);
-      } else {
-        console.log('subjectsテーブルのデータが初期化されました。');
+        console.error('トランザクションの開始中にエラーが発生しました。', err);
+        return;
       }
-    });
 
-    const truncateDepartment = 'TRUNCATE TABLE subjects_department';
-    connection.query(truncateDepartment, (err, results) => {
-      if (err) {
-        console.error('subjects_departmentテーブルのデータ初期化中にエラーが発生しました。', err);
-      } else {
-        console.log('subjects_departmentテーブルのデータが初期化されました。');
-      }
-    });
+      // トランザクション内でクエリを実行
+      const queries = [
+        'TRUNCATE TABLE subjects_department',
+        'TRUNCATE TABLE subject_teachers',
+        'TRUNCATE TABLE timetable',
+        'SET FOREIGN_KEY_CHECKS = 0', // 外部キー制約を無効にする
+        'TRUNCATE TABLE subjects',
+        'SET FOREIGN_KEY_CHECKS = 1', // 外部キー制約を再度有効にする
+      ];
 
-    const truncateTeachers = 'TRUNCATE TABLE subject_teachers';
-    connection.query(truncateTeachers, (err, results) => {
-      if (err) {
-        console.error('subject_teachersテーブルのデータ初期化中にエラーが発生しました。', err);
-      } else {
-        console.log('subject_teachersテーブルのデータが初期化されました。');
-      }
-    });
+      const executeQueries = () => {
+        const query = queries.shift();
+        if (query) {
+          connection.query(query, (err, results) => {
+            if (err) {
+              console.error(`クエリの実行中にエラーが発生しました。クエリ: ${query}`, err);
+              // トランザクションをロールバック
+              connection.rollback(() => {
+                console.error('トランザクションをロールバックしました。');
+                connection.end();
+              });
+            } else {
+              console.log(`クエリが正常に実行されました。クエリ: ${query}`);
+              executeQueries(); // 次のクエリを実行
+            }
+          });
+        } else {
+          // すべてのクエリが成功した場合、トランザクションをコミット
+          connection.commit((err) => {
+            if (err) {
+              console.error('トランザクションのコミット中にエラーが発生しました。', err);
+            } else {
+              console.log('トランザクションが正常にコミットされました。');
+            }
+            connection.end();
+          });
+        }
+      };
 
-    const truncateTimeTable = 'TRUNCATE TABLE timetable';
-    connection.query(truncateTimeTable, (err, results) => {
-      if (err) {
-        console.error('timetableテーブルのデータ初期化中にエラーが発生しました。', err);
-      } else {
-        console.log('timetableテーブルのデータが初期化されました。');
-      }
+      executeQueries(); // 最初のクエリを実行
     });
-    connection.end(); // データベース接続を閉じる
   }
 });

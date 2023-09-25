@@ -41,7 +41,9 @@ connection.connect((err) => {
     VALUES
       (1, 'HI'),
       (2, 'TE'),
-      (3, 'CI');
+      (3, 'CI'),
+      (3, 'HI'),
+      (3, 'TE');
   `;
 
   connection.query(insertDepartmentData, (err, results) => {
@@ -58,6 +60,7 @@ connection.connect((err) => {
     VALUES
       (1, '山田'),
       (2, '田中'),
+      (2, '佐々木'),
       (3, '佐藤');
   `;
 
@@ -70,21 +73,41 @@ connection.connect((err) => {
   });
 
   // 月曜日
-  const insertMondayQuery = `
+  const insertTimetableQuery = `
   INSERT INTO timetable (time_slot, day_of_week, subject_id)
   VALUES (?, ?, ?)
   `;
 
+  //monday tuesday wednesday thursday friday
   // 仮の科目の subject_id を使って挿入
-  const mondayData = [
-  { time_slot: 1, day_of_week: 'mon', subject_id: 1 }, // 1 は仮の subject_id
-  { time_slot: 2, day_of_week: 'mon', subject_id: 2 },
-  { time_slot: 3, day_of_week: 'mon', subject_id: 3 },
-  { time_slot: 4, day_of_week: 'mon', subject_id: 3 }
+  const timetableData = [
+    { time_slot: 1, day_of_week: 'mon', subject_id: 1 }, // 1 は仮の subject_id
+    { time_slot: 2, day_of_week: 'mon', subject_id: 2 },
+    { time_slot: 3, day_of_week: 'mon', subject_id: 3 },
+    { time_slot: 4, day_of_week: 'mon', subject_id: 3 },
+
+    { time_slot: 1, day_of_week: 'tue', subject_id: 3 }, 
+    { time_slot: 2, day_of_week: 'tue', subject_id: 2 },
+    { time_slot: 3, day_of_week: 'tue', subject_id: 1 },
+    { time_slot: 4, day_of_week: 'tue', subject_id: 3 },
+
+    { time_slot: 1, day_of_week: 'wed', subject_id: 1 }, 
+    { time_slot: 2, day_of_week: 'wed', subject_id: 2 },
+    { time_slot: 3, day_of_week: 'wed', subject_id: 3 },
+    { time_slot: 4, day_of_week: 'wed', subject_id: 3 },
+
+    { time_slot: 3, day_of_week: 'thu', subject_id: 3 },
+
+    { time_slot: 1, day_of_week: 'fri', subject_id: 4 }, 
+    { time_slot: 2, day_of_week: 'fri', subject_id: 2 },
+    { time_slot: 3, day_of_week: 'fri', subject_id: 3 },
+    { time_slot: 4, day_of_week: 'fri', subject_id: 3 },
   ];
 
-  mondayData.forEach(data => {
-    connection.query(insertMondayQuery, [data.time_slot, data.day_of_week, data.subject_id], (err, results) => {
+
+
+  timetableData.forEach(data => {
+    connection.query(insertTimetableQuery, [data.time_slot, data.day_of_week, data.subject_id], (err, results) => {
       if (err) {
         console.error('データの挿入中にエラーが発生しました。', err);
       } else {
@@ -92,9 +115,6 @@ connection.connect((err) => {
       }
     });
   });
-
-  // 火曜日、水曜日、木曜日、金曜日にも同様のデータを挿入する
-  // ...
 
   connection.end();
 });

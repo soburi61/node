@@ -1,7 +1,16 @@
+<% function getSubjectName(subject) {
+    // console.log(subject);
+    if(subject){
+        return subject.subject_name;
+    }
+    return "";
+} %>
+
 <!DOCTYPE html>
 
 <html lang="ja">
 <head>
+    
     <meta charset="utf-8">
     <link href="/css/style.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,53 +38,23 @@
     <main>
         <table>
             <tr>
-                <th style="width: 10%;">時間</th>
-                <th>月</th>
-                <th>火</th>
-                <th>水</th>
-                <th>木</th>
-                <th>金</th>
+              <th style="width: 10%;">時間</th>
+              <th>月</th>
+              <th>火</th>
+              <th>水</th>
+              <th>木</th>
+              <th>金</th>
             </tr>
+            <% for (let i = 0; i < 4; i++) { %>
             <tr>
-                <td>1</td>
-                <td><%=subjects[0]["subject_name"] %></td>
-                <td>数学</td>
-                <td>国語</td>
-                <td>物理</td>
-                <td>化学</td>
+              <td><%= i+1 %></td>
+              <td><%= getSubjectName(monSubjects[i]) %></td>
+              <td><%= getSubjectName(tueSubjects[i]) %></td>
+              <td><%= getSubjectName(wedSubjects[i]) %></td>
+              <td><%= getSubjectName(thuSubjects[i]) %></td>
+              <td><%= getSubjectName(friSubjects[i]) %></td>
             </tr>
-            <tr>
-                <td>2</td>
-                <td>物理</td>
-                <td>英語</td>
-                <td>数学</td>
-                <td>体育</td>
-                <td>美術</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>化学</td>
-                <td>国語</td>
-                <td>英語</td>
-                <td>地理</td>
-                <td>生物</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>生物</td>
-                <td>物理</td>
-                <td>体育</td>
-                <td>数学</td>
-                <td>地理</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>生物</td>
-                <td>物理</td>
-                <td>体育</td>
-                <td>数学</td>
-                <td>地理</td>
-            </tr>
+            <% } %>
         </table>
     </main>
     <footer>
