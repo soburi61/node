@@ -3,16 +3,11 @@ CREATE TABLE subjects (
   subject_name VARCHAR(255),
   subject_type VARCHAR(255),
   subject_location VARCHAR(255),
+  credit INT,-- 単位
+  grade INT, -- 対象学年
   absences INT,-- 欠課
   tardies INT,-- 遅刻
   memo VARCHAR(255)
-);
-
-CREATE TABLE subjects_department (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  subject_id INT,
-  department VARCHAR(255),
-  FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
 
 CREATE TABLE subject_teachers (

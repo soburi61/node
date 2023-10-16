@@ -1,7 +1,7 @@
-<% function getSubjectName(subject) {
-    // console.log(subject);
-    if(subject){
-        return subject.subject_name;
+<% function getSubjectDetail(subject) {
+    if (subject) {
+        return `${subject.subject_name}
+            <span class="detail">${subject.subject_type} ${subject.credit}単位 ${subject.subject_location}</span>`;
     }
     return "";
 } %>
@@ -10,7 +10,6 @@
 
 <html lang="ja">
 <head>
-    
     <meta charset="utf-8">
     <link href="/css/style.css" rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,7 +37,7 @@
     <main>
         <table>
             <tr>
-              <th style="width: 10%;">時間</th>
+              <th style="width:5%;">時間</th>
               <th>月</th>
               <th>火</th>
               <th>水</th>
@@ -47,12 +46,12 @@
             </tr>
             <% for (let i = 0; i < 4; i++) { %>
             <tr>
-              <td><%= i+1 %></td>
-              <td><%= getSubjectName(monSubjects[i]) %></td>
-              <td><%= getSubjectName(tueSubjects[i]) %></td>
-              <td><%= getSubjectName(wedSubjects[i]) %></td>
-              <td><%= getSubjectName(thuSubjects[i]) %></td>
-              <td><%= getSubjectName(friSubjects[i]) %></td>
+              <td ><%= i+1 %></td>
+              <td><%- getSubjectDetail(monSubjects[i]) %></td>
+              <td><%- getSubjectDetail(tueSubjects[i]) %></td>
+              <td><%- getSubjectDetail(wedSubjects[i]) %></td>
+              <td><%- getSubjectDetail(thuSubjects[i]) %></td>
+              <td><%- getSubjectDetail(friSubjects[i]) %></td>
             </tr>
             <% } %>
         </table>

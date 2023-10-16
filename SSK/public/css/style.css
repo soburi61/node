@@ -12,7 +12,11 @@ body {
     min-height: 100vh;
 }
 header {
+    height:10vh;
     margin:0;
+    top: 0;
+    position:fixed;
+    width:100%;
     background-color: #333;
     color: #fff;
     text-align: center;
@@ -20,8 +24,6 @@ header {
     align-items:center;
     justify-content:space-between;
 }
-
-
 .logo a{
     display:block;
     margin-left:1vw;
@@ -44,36 +46,38 @@ header {
 
 
 main {
-    margin: 20px;
+    height: auto;
+    margin-top:10vh;
 }
 
 h1 {
     text-align: center;
 }
-
+.detail {
+    font-size: 0.6em;
+}
 table {
     width: 100%;
+    height: 90vh;
     border-collapse: collapse;
-    margin-top: 20px;
 }
 
 table th, table td {
     border: 1px solid #ccc;
-    padding: 10px;
+    padding: 0px;
     text-align: center;
-    height:10vh;
+    white-space: pre-line;
 }
 
 table th {
+    height:3vh;
     background-color: #f2f2f2;
 }
 
 footer {
+    width: 100%;
     background-color: #333;
     color: #fff;
     text-align: center;
-    padding: 10px 0;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+    padding: 3px 0;
 }

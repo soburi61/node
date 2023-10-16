@@ -22,7 +22,6 @@ connection.connect((err) => {
 
       // トランザクション内でクエリを実行
       const queries = [
-        'TRUNCATE TABLE subjects_department',
         'TRUNCATE TABLE subject_teachers',
         'TRUNCATE TABLE timetable',
         'SET FOREIGN_KEY_CHECKS = 0', // 外部キー制約を無効にする
