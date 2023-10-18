@@ -57,6 +57,33 @@ function getSubjectsByDay(timetableData, dayOfWeek) {
   return subjects;
 }
 
+// 新しい科目を追加するAPI
+app.post('/addSubject', (req, res) => {
+  const newSubject = req.body; // 新しい科目のデータを取得（例：{ subject_name: '数学', ... }）
+  const sql = 'INSERT INTO subjects SET ?';
+  connection.query(sql, newSubject, (err, result) => {
+    if (err) {
+      console.error('新しい科目の追加に失敗しました。', err);
+      res.status(500).send('科目追加エラー');
+    } else {
+      res.send('科目を追加しました。');
+    }
+  });
+});
+
+// 科目一覧を取得するAPI
+app.get('/getSubjects', (req, res) => {
+  const sql = 'SELECT * FROM subjects';
+  connection.query(sql, (err, subjects) => {
+    if (err) {
+      console.error('科目一覧の取得に失敗しました。', err);
+      res.status(500).send('科目取得エラー');
+    } else {
+      res.json(subjects);
+    }
+  });
+});
+
 app.get('/task', (req, res) => {
   res.render('task.ejs');
 });

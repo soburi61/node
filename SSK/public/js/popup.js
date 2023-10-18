@@ -106,7 +106,8 @@ var popupDetails = {
                 <span class="detail">2023-11-12 11:59 PM</span>
                 <input type="date" name="deadline">
                 <hr>
-                <p>タスクの詳細</p>`
+                <p>タスクの詳細</p>`,
+    'add-timetable': ``
     // 他のタスクも追加可能
 };
 
@@ -126,6 +127,19 @@ $(function(){
             modalContent.html(popupDetails['add-task-btn']); // new-taskの内容をセット
         } else if ($(this).hasClass('task-item')) {
             modalContent.html(popupDetails['task-item']); // new-taskの内容をセット
+        } else if ($(this).hasClass('add-timetable')) {
+            $.getJSON('/getSubjects', function(subjects) {
+                let subjectListHtml = '<p class="subject-title">科目を追加</p><ul class="subject-list">';
+                subjects.forEach((subject) => {
+                  subjectListHtml += `<li><button class="select-subject" data-subject-id="${subject.subject_id}">${subject.subject_name}</button></li>`;
+                });
+                subjectListHtml += '</ul>';
+                console.log('取得した科目:', subjects);
+                modalContent.html(subjectListHtml);
+              })
+              .fail(function() {
+                console.log("科目一覧の取得に失敗しました");
+              });
         } 
         // ... 他のクラス名に対する処理もここに追加 ...
 
