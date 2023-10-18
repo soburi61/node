@@ -1,26 +1,77 @@
 main {
-    flex-grow: 1;
-    padding: 20px;
-  }
-  
-  
-  
+  flex-grow: 1;
+  padding: 20px;
+}
+p{
+  margin:0 0;
+}
+.detail {
+  font-size: 0.7em;
+}
+.container-pane{
+  display:flex;
+  justify-content: flex-end;
+}
+/* タスクリストのスタイリング */
+#task-list {
+  border: 2px solid #ccc;
+  padding: 15px;
+  width: fit-content;
+  margin:0 2px;
+}
 
-  /* タスクリストのスタイリング */
-  #task-list {
-    border: 1px solid #ccc;
-    padding: 15px;
-  }
-  
-  #task-list h2 {
-    margin-top: 0;
-  }
-  
-  .task-item {
-    border-bottom: 1px solid #eee;
-    padding: 10px 0;
-  }
-  
-  .task-item:last-child {
-    border-bottom: none;
-  }
+#task-list h2 {
+  margin-top: 0;
+}
+.task-title{
+  font-size: 1.2em;
+  font-weight:bold;
+}
+
+.task-item {
+  border: 1px solid #ccc;
+  border-radius: 10px;  /* 角を丸くする */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 影をつける */
+  padding: 4px;
+  margin-top: 10px;  /* アイテム間の距離を開ける */
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+/* 並び替えとフィルターのスタイリング（必要に応じて） */
+label {
+  margin-right: 10px;
+  font-size:0.7em;
+}
+
+select {
+  margin-bottom: 15px;
+}
+
+/* プルダウンメニューとラベルのスタイリング */
+.label-select-container {
+  display: inline-block;  /* インライン要素として表示 */
+  margin: 0px 5px;  /* 右側にマージンを設定 */
+}
+
+.label-select-container label,
+.label-select-container select {
+  vertical-align: middle;  /* 垂直方向の位置を中央に */
+  margin: 0;  /* 余計なマージンを削除 */
+  padding: 0;  /* 余計なパディングを削除 */
+  display: flex;
+  align-items: flex-start; /* 縦方向の開始位置に要素を揃える */
+  justify-content: flex-start; /* 横方向の開始位置に要素を揃える */
+}
+.pop_up{
+  display:none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(227, 246, 245, 0.6);
+  z-index: 2;
+}
