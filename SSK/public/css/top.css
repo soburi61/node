@@ -15,9 +15,18 @@ table th, table td {
     padding: 0px;
     text-align: center;
     white-space: pre-line;
+    position: relative;
 }
 
 table th {
     height:3vh;
     background-color: #f2f2f2;
+}
+
+/* ボタンを右下に配置 */
+.add-subject-btn, .edit-subject-btn{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin:10px 10px;
 }

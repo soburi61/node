@@ -4,6 +4,7 @@ main {
 }
 p{
   margin:0 0;
+  font-size:0.8em;
 }
 .detail {
   font-size: 0.7em;
@@ -42,8 +43,9 @@ p{
 
 /* 並び替えとフィルターのスタイリング（必要に応じて） */
 label {
-  margin-right: 10px;
   font-size:0.7em;
+  display: inline-block;
+  width: 6em;  /* 幅を固定 */
 }
 
 select {
@@ -64,14 +66,4 @@ select {
   display: flex;
   align-items: flex-start; /* 縦方向の開始位置に要素を揃える */
   justify-content: flex-start; /* 横方向の開始位置に要素を揃える */
-}
-.pop_up{
-  display:none;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background-color: rgba(227, 246, 245, 0.6);
-  z-index: 2;
 }

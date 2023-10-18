@@ -2,9 +2,10 @@
     if (subject) {
         return `${subject.subject_name}
             <span class="detail">${subject.subject_type} ${subject.credit}単位 ${subject.subject_location}
-                欠課:${subject.absences} 遅刻:${subject.tardies}</span>`;
+                欠課:${subject.absences} 遅刻:${subject.tardies}</span>
+                <button class='add-subject-btn popup'><i class="fa-solid fa-pen-to-square"></i></button>`;
     }
-    return "";
+    return `<button class='edit-subject-btn popup'><i class="fa-solid fa-plus"></i></button>`;
 } %>
 
 <!DOCTYPE html>
@@ -40,5 +41,15 @@
         </table>
     </main>
     <%- include('footer.ejs') %>
+    <div class="modal-container">
+        <div class="modal-body">
+          <!-- 閉じるボタン -->
+          <div class="modal-close">×</div>
+          <!-- モーダル内のコンテンツ -->
+          <div class="modal-content">
+            
+          </div>
+        </div>
+      </div>
 </body>
 </html>

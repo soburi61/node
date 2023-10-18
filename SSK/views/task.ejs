@@ -3,7 +3,6 @@
 <head>
   <%- include('head.ejs') %>
   <link href="/css/task.css" rel="stylesheet">
-  <script src="/js/popup.js"></script>
 </head>
 <body>
   <%- include('header.ejs') %>
@@ -34,35 +33,35 @@
         </div>
     
         <!-- 仮のタスク -->
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク1</p>
             
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク2</p>
             
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク3</p>
           
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク4</p>
           
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク5</p>
           
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク6</p>
           
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク7</p>
           
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク8</p>
           
         </div>
@@ -92,14 +91,14 @@
         </div>
     
         <!-- 仮のタスク -->
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
             <p>タスク1</p>
         </div>
             
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
             <p>タスク2</p>  
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク3</p>
           
         </div>
@@ -129,15 +128,15 @@
         </div>
     
         <!-- 仮のタスク -->
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
             <p>タスク1</p>
             
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
             <p>タスク2</p>
             
         </div>
-        <div class="task-item">
+        <div class="task-item popup" id="edit-task">
           <p>タスク3</p>
           
         </div>
@@ -147,10 +146,13 @@
   </main>
     
   <%- include('footer.ejs') %>
-  <div class="pop_up">
-    <div class="contentPopup">
-      <h2>Europe Travel</h2>
-      <h3>使用言語：HTML/CSS/jQuery</h3>
+  <div class="modal-container">
+    <div class="modal-body">
+      <!-- 閉じるボタン -->
+      <div class="modal-close">×</div>
+      <!-- モーダル内のコンテンツ -->
+      <div class="modal-content">
+      </div>
     </div>
   </div>
 </body>
