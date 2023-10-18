@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Task Manager</title>
+  <link href="/css/style.css" rel="stylesheet">
+  <link href="/css/new-task.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/b740cfc262.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <%- include('header.ejs') %>
+    <main>
+        <div id="new-task">
+            <h2>新しいタスク</h2>
+            <form action="/addTask" method="post">
+            <input type="text" name="task" placeholder="タスク名">
+            <br>
+            <label for="importance">重要度:</label>
+            <input type="range" id="importance" name="importance" min="0" max="10">
+            <br>
+            <label for="lightness">軽さ:</label>
+            <input type="range" id="lightness" name="lightness" min="0" max="10">
+            <br>
+            <input type="date" name="deadline">
+            <button type="submit">追加</button>
+            </form>
+        </div>
+    </main>
+    <%- include('footer.ejs') %>
+</body>
+</html>

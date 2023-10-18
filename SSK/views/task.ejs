@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <%- include('head.ejs') %>
+  <link href="/css/task.css" rel="stylesheet">
+</head>
+<body>
+  <%- include('header.ejs') %>
+  <%- include('sidebar.ejs') %>
+  <main>  
+      <div id="task-list">
+          <h2>タスクリスト</h2>
+          <!-- 仮のタスク -->
+          <div class="task-item">
+          <h3>タスク1</h3>
+          <p>重要度: 8, 軽さ: 3, 締切: 2023-11-20</p>
+          </div>
+          <div class="task-item">
+          <h3>タスク2</h3>
+          <p>重要度: 5, 軽さ: 7, 締切: 2023-11-22</p>
+          </div>
+          <!-- 以降、タスクを追加 -->
+      </div>
+      </section>
+  </main>
+    
+  <%- include('footer.ejs') %>
+</body>
+</html>

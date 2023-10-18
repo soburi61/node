@@ -1,0 +1,26 @@
+main {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  
+  
+
+  /* タスクリストのスタイリング */
+  #task-list {
+    border: 1px solid #ccc;
+    padding: 15px;
+  }
+  
+  #task-list h2 {
+    margin-top: 0;
+  }
+  
+  .task-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+  }
+  
+  .task-item:last-child {
+    border-bottom: none;
+  }

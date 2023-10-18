@@ -57,6 +57,17 @@ function getSubjectsByDay(timetableData, dayOfWeek) {
   return subjects;
 }
 
+app.get('/task', (req, res) => {
+  res.render('task.ejs');
+});
+
+app.get('/new-task', (req, res) => {
+  res.render('new-task.ejs');
+});
+
+app.get('/new-subject', (req, res) => {
+  res.render('new-subject.ejs');
+});
 // 以下はサーバーの設定になるので, どれか選んでコメントアウトを外してください。
 // 卒検PC
 // console.log('10.133.90.88:3000/');
