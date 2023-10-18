@@ -3,9 +3,9 @@
         return `${subject.subject_name}
             <span class="detail">${subject.subject_type} ${subject.credit}単位 ${subject.subject_location}
                 欠課:${subject.absences} 遅刻:${subject.tardies}</span>
-                <button class='add-subject-btn popup'><i class="fa-solid fa-pen-to-square"></i></button>`;
+                <button class='edit-subject-btn popup btn'><i class="fa-solid fa-pen-to-square"></i></button>`;
     }
-    return `<button class='edit-subject-btn popup'><i class="fa-solid fa-plus"></i></button>`;
+    return `<button class='btn'><i class="fa-solid fa-plus"></i></button>`;
 } %>
 
 <!DOCTYPE html>
@@ -17,7 +17,15 @@
 </head>
 <body>
     <%- include('header.ejs') %>
-    <%- include('sidebar.ejs') %>
+    <aside id="sidebar">
+      <div id="search-bar">
+        <input type="text" placeholder="科目検索...">
+      </div>
+      <ul>
+        <li><a class="add-subject-btn popup">新しい科目</a></li>
+        <!-- ここに必要な要素を追加 -->
+      </ul>
+    </aside>
     <main>
         <table>
             <tr>

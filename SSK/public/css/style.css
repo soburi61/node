@@ -96,6 +96,9 @@ main {
     height: auto;
     margin-top:10vh;
 }
+.detail {
+  font-size: 0.7em;
+}
 /*モーダル本体の指定 + モーダル外側の背景の指定*/
 .modal-container{
 	position: fixed;
