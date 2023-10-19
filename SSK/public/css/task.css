@@ -87,10 +87,12 @@ h1 {
 table {
     border-spacing: 0;
     border-collapse: collapse;
+    width:60vw;
+    height:70vh;
 }
 
 td {
-    border: 1px solid #ddd;
+    border: 2px solid #ddd;
     padding: 5px;
     text-align: center;
 }
