@@ -3,6 +3,7 @@
 <head>
   <%- include('head.ejs') %>
   <link href="/css/task.css" rel="stylesheet">
+  <script src="/js/calender.js"></script>
 </head>
 <body>
   <%- include('header.ejs') %>
@@ -16,7 +17,9 @@
     </ul>
   </aside>
   <main>
-    <div class="container-pane">  
+    
+    <div class="container-pane"> 
+      <div id="calendar"></div> 
       <div id="task-list">
         <p class="task-title">タスクリスト</p>
         <!-- 並び替えプルダウン -->
