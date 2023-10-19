@@ -124,39 +124,7 @@ $(function(){
             modalContent.html(popupDetails['add-task-btn']);
         } else if ($(this).hasClass('task-item')) {
             modalContent.html(popupDetails['task-item']);
-        } else if ($(this).hasClass('add-timetable')) {
-            $.getJSON('/getSubjects', function(subjects) {
-                let subjectListHtml = '<p class="subject-title">科目を追加</p><ul class="subject-list">';
-                subjects.forEach((subject) => {
-                    subjectListHtml += `<li><button class="select-subject" data-subject-id="${subject.subject_id}">${subject.subject_name}</button></li>`;
-                });
-                subjectListHtml += '</ul>';
-                modalContent.html(subjectListHtml);
-        
-                // 科目が選択されたときに発火するイベント
-                $('.select-subject').on('click', function() {
-                    const subjectId = $(this).data('subject-id');  // 選択された科目のID
-                    // <td>タグにdata-dayとdata-timeがセットされていると仮定
-                    const day = $(this).closest('td').data('day');  // 曜日
-                    const time = $(this).closest('td').data('time');  // 時間
-
-                    // このデータをサーバーに送る
-                    $.post('/setClass', {subjectId, day, time}, function(response) {
-                        // 成功した場合の処理
-                        if (response.success) {
-                            console.log('科目が追加されました');
-                            
-                        }
-                    })
-                    .fail(function() {
-                        console.log('科目の追加に失敗しました');
-                    });
-                });
-            })
-            .fail(function() {
-                console.log("科目一覧の取得に失敗しました");
-            });
-        }
+        } 
         // ... 他のクラス名に対する処理もここに追加 ...
 
         return false; // イベントの伝播を防ぐ
