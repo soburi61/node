@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 app.use(express.static('public'));
+// 必要なミドルウェアを追加して、JSON形式でリクエストボディを解析できるようにする
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
@@ -80,6 +83,27 @@ app.get('/getSubjects', (req, res) => {
       res.status(500).send('科目取得エラー');
     } else {
       res.json(subjects);
+    }
+  });
+});
+
+app.post('/setClass', (req, res) => {
+  // リクエストボディから必要な情報を取得
+  const { subject_id, day_of_week, time_slot } = req.body;
+
+  // SQLクエリを設定
+  const sql = `INSERT INTO timetable (subject_id, day_of_week, time_slot) VALUES (?, ?, ?)`;
+
+  // クエリを実行
+  connection.query(sql, [subject_id, day_of_week, time_slot], (err, results) => {
+    if (err) {
+      console.error('時間割に科目を追加する際にエラーが発生しました:', err);
+      res.status(500).send('時間割追加エラー');
+    } else {
+      // 成功した場合、successプロパティをtrueに設定
+      console.log("Query Result:", results);
+
+      res.json({ success: true, message: '時間割に科目を追加しました', results });
     }
   });
 });

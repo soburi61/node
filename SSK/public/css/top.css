@@ -40,4 +40,7 @@ label {
     display: inline-block;
     width: 6em;  /* 幅を固定 */
 }
-  
+
+ul{
+    list-style: none;
+  }

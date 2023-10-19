@@ -106,9 +106,7 @@ var popupDetails = {
                 <span class="detail">2023-11-12 11:59 PM</span>
                 <input type="date" name="deadline">
                 <hr>
-                <p>タスクの詳細</p>`,
-    'add-timetable': ``
-    // 他のタスクも追加可能
+                <p>タスクの詳細</p>`
 };
 
 $(function(){
@@ -117,30 +115,48 @@ $(function(){
 
     $('.popup').on('click', function(){
         container.addClass('active'); // モーダルを表示
-
         // クラス名で条件分岐
         if ($(this).hasClass('add-subject-btn')) {
-            modalContent.html(popupDetails['add-subject-btn']); // edit-taskの内容をセット
+            modalContent.html(popupDetails['add-subject-btn']);
         } else if ($(this).hasClass('edit-subject-btn')) {
-            modalContent.html(popupDetails['edit-subject-btn']); // new-taskの内容をセット
+            modalContent.html(popupDetails['edit-subject-btn']);
         } else if ($(this).hasClass('add-task-btn')) {
-            modalContent.html(popupDetails['add-task-btn']); // new-taskの内容をセット
+            modalContent.html(popupDetails['add-task-btn']);
         } else if ($(this).hasClass('task-item')) {
-            modalContent.html(popupDetails['task-item']); // new-taskの内容をセット
+            modalContent.html(popupDetails['task-item']);
         } else if ($(this).hasClass('add-timetable')) {
             $.getJSON('/getSubjects', function(subjects) {
                 let subjectListHtml = '<p class="subject-title">科目を追加</p><ul class="subject-list">';
                 subjects.forEach((subject) => {
-                  subjectListHtml += `<li><button class="select-subject" data-subject-id="${subject.subject_id}">${subject.subject_name}</button></li>`;
+                    subjectListHtml += `<li><button class="select-subject" data-subject-id="${subject.subject_id}">${subject.subject_name}</button></li>`;
                 });
                 subjectListHtml += '</ul>';
-                console.log('取得した科目:', subjects);
                 modalContent.html(subjectListHtml);
-              })
-              .fail(function() {
+        
+                // 科目が選択されたときに発火するイベント
+                $('.select-subject').on('click', function() {
+                    const subjectId = $(this).data('subject-id');  // 選択された科目のID
+                    // <td>タグにdata-dayとdata-timeがセットされていると仮定
+                    const day = $(this).closest('td').data('day');  // 曜日
+                    const time = $(this).closest('td').data('time');  // 時間
+
+                    // このデータをサーバーに送る
+                    $.post('/setClass', {subjectId, day, time}, function(response) {
+                        // 成功した場合の処理
+                        if (response.success) {
+                            console.log('科目が追加されました');
+                            
+                        }
+                    })
+                    .fail(function() {
+                        console.log('科目の追加に失敗しました');
+                    });
+                });
+            })
+            .fail(function() {
                 console.log("科目一覧の取得に失敗しました");
-              });
-        } 
+            });
+        }
         // ... 他のクラス名に対する処理もここに追加 ...
 
         return false; // イベントの伝播を防ぐ

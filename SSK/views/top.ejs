@@ -27,27 +27,28 @@
       </ul>
     </aside>
     <main>
-        <table>
-            <tr>
-              <th style="width:5%;">時間</th>
-              <th>月</th>
-              <th>火</th>
-              <th>水</th>
-              <th>木</th>
-              <th>金</th>
-            </tr>
-            <% for (let i = 0; i < 4; i++) { %>
-            <tr>
-              <td ><%= i+1 %></td>
-              <td><%- getSubjectDetail(monSubjects[i]) %></td>
-              <td><%- getSubjectDetail(tueSubjects[i]) %></td>
-              <td><%- getSubjectDetail(wedSubjects[i]) %></td>
-              <td><%- getSubjectDetail(thuSubjects[i]) %></td>
-              <td><%- getSubjectDetail(friSubjects[i]) %></td>
-            </tr>
-            <% } %>
-        </table>
+      <table>
+          <tr>
+            <th style="width:5%;">時間</th>
+            <th>月</th>
+            <th>火</th>
+            <th>水</th>
+            <th>木</th>
+            <th>金</th>
+          </tr>
+          <% for (let i = 0; i < 4; i++) { %>
+          <tr>
+            <td ><%= i+1 %></td>
+            <td data-day="mon" data-time="<%= i+1 %>"><%- getSubjectDetail(monSubjects[i]) %></td>
+            <td data-day="tue" data-time="<%= i+1 %>"><%- getSubjectDetail(tueSubjects[i]) %></td>
+            <td data-day="wed" data-time="<%= i+1 %>"><%- getSubjectDetail(wedSubjects[i]) %></td>
+            <td data-day="thu" data-time="<%= i+1 %>"><%- getSubjectDetail(thuSubjects[i]) %></td>
+            <td data-day="fri" data-time="<%= i+1 %>"><%- getSubjectDetail(friSubjects[i]) %></td>
+          </tr>
+          <% } %>
+      </table>
     </main>
+  
     <%- include('footer.ejs') %>
     <div class="modal-container">
         <div class="modal-body">
