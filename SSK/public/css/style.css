@@ -9,7 +9,6 @@ body {
     margin: 0;
     padding: 0px 0;
     border: 0 solid #24292f;
-    min-height: 100vh;
 }
 header {
     height:10vh;
@@ -93,8 +92,8 @@ nav{
   }
 
 main {
-    height: auto;
     margin-top:10vh;
+    min-height: 85vh;
 }
 .detail {
   font-size: 0.7em;
@@ -165,4 +164,5 @@ footer {
     color: #fff;
     text-align: center;
     padding: 3px 0;
+    height:5vh;
 }

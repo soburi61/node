@@ -35,29 +35,29 @@ var popupDetails = {
                 <br>
                 <button type="submit" class="btn">追加</button>
                 </form>`,
-                'edit-subject-btn': `
+    'edit-subject-btn': `
                 <p class="subject-title">応用数学II</p>
-                <div>
-                    <span>科目のタイプ: </span><span>専門必修</span>
-                </div>
-                <div>
-                    <span>場所: </span><span>教室</span>
-                </div>
-                <div>
-                    <span>単位数: </span><span>2</span>
-                </div>
-                <div>
-                    <span>対象学年: </span><span>5</span>
-                </div>
-                <div>
-                    <span>欠課: </span><span>0</span>
-                </div>
-                <div>
-                    <span>遅刻: </span><span>0</span>
-                </div>
-                <div>
-                    <span>メモ: </span><span></span>
-                </div>
+                <label for="subject_type">科目のタイプ</label>
+                <span>:</span><span>専門必修</span>
+                <br>
+                <label for="subject_location">場所</label>
+                <span>:</span><span>教室</span>
+                <br>
+                <label for="credit">単位数</label>
+                <span>:</span><span>2</span>
+                <br>
+                <label for="grade">対象学年</label>
+                <span>:</span><span>5</span>
+                <br>
+                <label for="absences">欠課</label>
+                <span>:</span><span>0</span>
+                <br>
+                <label for="tardies">遅刻</label>
+                <span>:</span><span>0</span>
+                <br>
+                <label for="memo">メモ</label>
+                <span>:</span>
+                <br>
                 <button class="btn">編集</button>`,            
 	'add-task-btn': `
                 <p class="task-title">新しいタスク<p>
