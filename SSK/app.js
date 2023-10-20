@@ -121,11 +121,11 @@ app.get('/new-subject', (req, res) => {
 });
 // 以下はサーバーの設定になるので, どれか選んでコメントアウトを外してください。
 // 卒検PC
-// console.log('10.133.90.88:3000/');
-// app.listen(3000,'10.133.90.88');
+//console.log('10.133.90.88:3000/');
+//app.listen(3000,'10.133.90.88');
 // wifi
-// console.log('10.133.90.225:3000/')
-// app.listen(3000,'10.133.90.225');
+//console.log('10.133.90.225:3000/')
+//app.listen(3000,'10.133.90.225');
 // localhost
-console.log('localhost:3000/');
+//console.log('localhost:3000/');
 app.listen(3000);
