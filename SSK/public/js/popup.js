@@ -84,7 +84,7 @@ var popupDetails = {
                 <button type="submit">追加</button>
                 </form>`,
     'task-item': `
-                <p class="task-title">タスク1</p>
+                <p class="task-title">情報理論レポート</p>
                 <label for="filter">状態</label>
                 <span>:</span>
                 <select id="filter">
