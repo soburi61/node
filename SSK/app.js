@@ -124,8 +124,8 @@ app.get('/new-subject', (req, res) => {
 //console.log('10.133.90.88:3000/');
 //app.listen(3000,'10.133.90.88');
 // wifi
-//console.log('10.133.90.225:3000/')
-//app.listen(3000,'10.133.90.225');
+console.log('10.150.14.162:3000/')
+app.listen(3000,'10.150.14.162');
 // localhost
 //console.log('localhost:3000/');
-app.listen(3000);
+//app.listen(3000);
