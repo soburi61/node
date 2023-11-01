@@ -88,10 +88,8 @@ app.get('/getSubjects', (req, res) => {
 });
 
 app.post('/setClass', (req, res) => {
-  // リクエストボディから必要な情報を取得
   const { subject_id, day_of_week, time_slot } = req.body;
 
-  // SQLクエリを設定
   const sql = `INSERT INTO timetable (subject_id, day_of_week, time_slot) VALUES (?, ?, ?)`;
 
   // クエリを実行
