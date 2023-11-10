@@ -125,7 +125,7 @@ app.get('/new-subject', (req, res) => {
 //console.log('10.150.14.162:3000/')
 //app.listen(3000,'10.150.14.162');
 
-app.listen(3000,'10.150.15.231');
+//app.listen(3000,'10.150.15.231');
 // localhost
-//console.log('localhost:3000/');
+console.log('localhost:3000/');
 app.listen(3000);
