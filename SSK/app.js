@@ -3,6 +3,7 @@ const app = express();
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const mysql = require('mysql2');
+const saltRounds = 10;
 app.use(express.static('public'));
 // 必要なミドルウェアを追加して、JSON形式でリクエストボディを解析できるようにする
 app.use(express.json());

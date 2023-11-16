@@ -24,3 +24,11 @@ CREATE TABLE timetable (
     subject_id INT,
     FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
+
+CREATE TABLE users (
+  id VARCHAR(150) NOT NULL PRIMARY KEY,
+  password VARCHAR(255) NOT NULL, -- ハッシュ化されたパスワードが想定されている
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  isActive BOOLEAN NOT NULL DEFAULT TRUE
+);
