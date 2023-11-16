@@ -1,10 +1,13 @@
 const express = require('express');
 const app = express();
+const bcrypt = require('bcrypt');
+const session = require('express-session');
+const mysql = require('mysql2');
 app.use(express.static('public'));
 // 必要なミドルウェアを追加して、JSON形式でリクエストボディを解析できるようにする
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const mysql = require('mysql2');
+
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -20,7 +23,40 @@ connection.connect((err) => {
     console.log('データベースに接続しました。');
   }
 });
+// ユーザー登録エンドポイント
+app.post('/register', (req, res) => {
+  const { username, password } = req.body;
+  bcrypt.hash(password, saltRounds, (err, hash) => {
+    if (err) {
+      return res.status(500).send('エラーが発生しました');
+    }
+    pool.query('INSERT INTO users SET ?', { username, password: hash }, (error, results) => {
+      if (error) {
+        return res.status(500).send('ユーザー登録に失敗しました');
+      }
+      res.status(201).send('ユーザー登録が完了しました');
+    });
+  });
+});
 
+// ログインエンドポイント
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  pool.query('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
+    if (error || results.length === 0) {
+      return res.status(401).send('認証に失敗しました');
+    }
+    const user = results[0];
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (result) {
+        req.session.userId = user.id; // セッションにユーザーIDを保存
+        res.send('ログインに成功しました');
+      } else {
+        res.status(401).send('パスワードが間違っています');
+      }
+    });
+  });
+});
 // サーバーサイドのコード
 app.get('/', (req, res) => {
   // データベースから時間割データを取得するクエリ
