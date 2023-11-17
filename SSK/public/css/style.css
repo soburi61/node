@@ -94,6 +94,7 @@ nav{
 main {
     margin-top:10vh;
     min-height: 85vh;
+    width:100%;
 }
 .detail {
   font-size: 0.7em;

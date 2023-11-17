@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const mysql = require('mysql2');
 const saltRounds = 10;
+
 app.use(express.static('public'));
 // 必要なミドルウェアを追加して、JSON形式でリクエストボディを解析できるようにする
 app.use(express.json());
@@ -15,7 +16,17 @@ const connection = mysql.createConnection({
   user: 'root',
   password: '13919139aquqas',
   database: 'ssk',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
+
+app.use(session({
+  secret: 'key12', // セッションIDを暗号化するためのキー
+  resave: false, // セッションが変更されない限りセッションストアにセッションを再保存しない
+  saveUninitialized: false, // 未初期化状態のセッションをストアに強制保存しない
+  // その他のオプション（必要に応じて）
+}));
 
 connection.connect((err) => {
   if (err) {
@@ -26,13 +37,17 @@ connection.connect((err) => {
 });
 // ユーザー登録エンドポイント
 app.post('/register', (req, res) => {
-  const { username, password } = req.body;
+  const { id, email, password } = req.body;
+  console.log('Received data:', id, email, password); // データの確認
+
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
+      console.error('Hashing error:', err); // ハッシュ化エラーの確認
       return res.status(500).send('エラーが発生しました');
     }
-    pool.query('INSERT INTO users SET ?', { username, password: hash }, (error, results) => {
+    connection.query('INSERT INTO users (id, email, password) VALUES (?, ?, ?)', [id, email, hash], (error, results) => {
       if (error) {
+        console.error('Database error:', error); // データベースエラーの確認
         return res.status(500).send('ユーザー登録に失敗しました');
       }
       res.status(201).send('ユーザー登録が完了しました');
@@ -42,14 +57,25 @@ app.post('/register', (req, res) => {
 
 // ログインエンドポイント
 app.post('/login', (req, res) => {
-  const { username, password } = req.body;
-  pool.query('SELECT * FROM users WHERE username = ?', [username], (error, results) => {
-    if (error || results.length === 0) {
-      return res.status(401).send('認証に失敗しました');
+  const { id, password } = req.body;
+  connection.query('SELECT * FROM users WHERE id = ?', [id], (error, results) => {
+    if (error) {
+      console.error('Database error:', error);
+      return res.status(500).send('サーバーエラー');
     }
+
+    if (results.length === 0) {
+      return res.status(401).send('ユーザー名が見つかりません');
+    }
+
     const user = results[0];
-    bcrypt.compare(password, user.password, (err, result) => {
-      if (result) {
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) {
+        console.error('Bcrypt error:', err);
+        return res.status(500).send('エラーが発生しました');
+      }
+
+      if (isMatch) {
         req.session.userId = user.id; // セッションにユーザーIDを保存
         res.send('ログインに成功しました');
       } else {
@@ -58,6 +84,8 @@ app.post('/login', (req, res) => {
     });
   });
 });
+
+
 // サーバーサイドのコード
 app.get('/', (req, res) => {
   // データベースから時間割データを取得するクエリ
@@ -145,6 +173,15 @@ app.post('/setClass', (req, res) => {
 
 app.get('/task', (req, res) => {
   res.render('task.ejs');
+});
+
+app.get('/login_page', (req, res) => {
+  res.render('login.ejs');
+});
+
+
+app.get('/register_page', (req, res) => {
+  res.render('register.ejs');
 });
 
 app.get('/new-task', (req, res) => {
