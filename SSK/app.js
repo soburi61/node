@@ -3,6 +3,7 @@ const app = express();
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const mysql = require('mysql2');
+const { exec } = require('child_process');
 const saltRounds = 10;
 
 app.use(express.static('public'));
@@ -85,29 +86,19 @@ app.post('/login', (req, res) => {
   });
 });
 
+app.get('/scrape', (req, res) => {
+  // Pythonスクリプトのパスと引数を指定
+  const scriptPath = 'path/to/your/python/script.py';
+  const args = 'arg1 arg2';
 
-// サーバーサイドのコード
-app.get('/', (req, res) => {
-  // データベースから時間割データを取得するクエリ
-  const timetableQuery = `
-  SELECT timetable.*, subjects.*, subject_teachers.teacher
-  FROM timetable
-  LEFT JOIN subjects ON timetable.subject_id = subjects.subject_id
-  LEFT JOIN subject_teachers ON timetable.subject_id = subject_teachers.subject_id
-  `;
-
-  connection.query(timetableQuery, (err, timetableData) => {
-    if (err) {
-      console.error('時間割データの取得中にエラーが発生しました。', err);
-      res.status(500).send('データ取得エラー');
+  // Pythonスクリプトを実行
+  exec(`python ${scriptPath} ${args}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing Python script: ${error}`);
+      res.status(500).send('An error occurred');
     } else {
-      const monSubjects = getSubjectsByDay(timetableData, 'mon');
-      const tueSubjects = getSubjectsByDay(timetableData, 'tue');
-      const wedSubjects = getSubjectsByDay(timetableData, 'wed');
-      const thuSubjects = getSubjectsByDay(timetableData, 'thu');
-      const friSubjects = getSubjectsByDay(timetableData, 'fri');
-      // 取得したデータをEJSテンプレートに渡す
-      res.render('top.ejs', { monSubjects, tueSubjects, wedSubjects, thuSubjects, friSubjects });
+      console.log(`Python script executed successfully: ${stdout}`);
+      res.send('Scraping completed successfully');
     }
   });
 });
@@ -170,6 +161,32 @@ app.post('/setClass', (req, res) => {
     }
   });
 });
+
+app.get('/', (req, res) => {
+  // データベースから時間割データを取得するクエリ
+  const timetableQuery = `
+  SELECT timetable.*, subjects.*, subject_teachers.teacher
+  FROM timetable
+  LEFT JOIN subjects ON timetable.subject_id = subjects.subject_id
+  LEFT JOIN subject_teachers ON timetable.subject_id = subject_teachers.subject_id
+  `;
+
+  connection.query(timetableQuery, (err, timetableData) => {
+    if (err) {
+      console.error('時間割データの取得中にエラーが発生しました。', err);
+      res.status(500).send('データ取得エラー');
+    } else {
+      const monSubjects = getSubjectsByDay(timetableData, 'mon');
+      const tueSubjects = getSubjectsByDay(timetableData, 'tue');
+      const wedSubjects = getSubjectsByDay(timetableData, 'wed');
+      const thuSubjects = getSubjectsByDay(timetableData, 'thu');
+      const friSubjects = getSubjectsByDay(timetableData, 'fri');
+      // 取得したデータをEJSテンプレートに渡す
+      res.render('top.ejs', { monSubjects, tueSubjects, wedSubjects, thuSubjects, friSubjects });
+    }
+  });
+});
+
 
 app.get('/task', (req, res) => {
   res.render('task.ejs');
