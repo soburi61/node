@@ -13,17 +13,17 @@ CREATE TABLE users (
 );
 -- subjects テーブルの作成 (user_id を追加)
 CREATE TABLE subjects (
-  subject_id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id VARCHAR(150) NOT NULL,
-  subject_name VARCHAR(255),
-  subject_type VARCHAR(255),
-  subject_location VARCHAR(255),
-  credit INT,
-  grade INT,
-  absences INT,
-  tardies INT,
-  memo VARCHAR(255),
-  FOREIGN KEY (user_id) REFERENCES users(id)
+  subject_id INT AUTO_INCREMENT PRIMARY KEY,  -- 科目ID
+  user_id VARCHAR(150) NOT NULL,  -- ユーザーID
+  subject_name VARCHAR(255),  -- 科目名
+  subject_type VARCHAR(255),  -- 科目の種類
+  subject_location VARCHAR(255),  -- 科目の場所
+  credit INT,  -- 単位数
+  grade INT,  -- 学年
+  absences INT,  -- 欠席数
+  tardies INT,  -- 遅刻数
+  memo VARCHAR(255),  -- メモ
+  FOREIGN KEY (user_id) REFERENCES users(id)  -- ユーザーIDの外部キー
 );
 -- subject_teachers テーブルの作成
 CREATE TABLE subject_teachers (

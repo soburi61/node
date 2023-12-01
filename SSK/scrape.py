@@ -29,7 +29,32 @@ def scrape_subjects(school, department, grade):
     #print(department_soup.prettify())
     del school_url ,department_heading ,res ,school_soup ,parent_div 
     #ここから科目を取得する
-    
+    subject_name = ""
+    subject_type = ""
+    subject_location = ""
+    credit = 0
+    # ここから科目を取得する
+    subjects_info = []
+
+    # 科目ごとの情報を取得してsubjects_infoに格納
+    for subject in department_soup.find_all("div", class_="subject"):
+        subject_name = subject.find("h5").text
+        subject_type = subject.find("span", class_="type").text
+        subject_location = subject.find("span", class_="location").text
+        credit = int(subject.find("span", class_="credit").text)
+        teachers = [teacher.text for teacher in subject.find_all("span", class_="teacher")]
+
+        subject_info = {
+            "subject_name": subject_name,
+            "subject_type": subject_type,
+            "subject_location": subject_location,
+            "credit": credit,
+            "teachers": teachers
+        }
+
+        subjects_info.append(subject_info)
+
+    return subjects_info
 
 # 高専名、学科名、学年を指定して科目一覧を取得
 school = "函館工業高等専門学校"  
@@ -38,5 +63,5 @@ grade = "1"  # 1年生
 subjects = scrape_subjects(school, department, grade)
 
 # 取得した科目一覧を表示
-#for subject in subjects:
-#    print(subject)
+for subject in subjects:
+    print(subject)
