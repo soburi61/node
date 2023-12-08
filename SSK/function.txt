@@ -1,6 +1,2 @@
-create function checkidpw(id varchar(150), pw varchar(20)) returns int
-begin
-  if(pw=(select password from users where id=id)) then return 1;
-  else return -1;
-end if;
-end;
+mysqldump -u root -p ssk > backup.sql
+mysql -u root -p ssk < backup.sql

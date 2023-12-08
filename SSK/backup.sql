@@ -53,12 +53,11 @@ CREATE TABLE `subjects` (
   `user_id` varchar(150) NOT NULL,
   `subject_name` varchar(255) DEFAULT NULL,
   `subject_type` varchar(255) DEFAULT NULL,
-  `subject_location` varchar(255) DEFAULT NULL,
   `credit` int DEFAULT NULL,
-  `grade` int DEFAULT NULL,
   `absences` int DEFAULT NULL,
   `tardies` int DEFAULT NULL,
   `memo` varchar(255) DEFAULT NULL,
+  `isActive` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`subject_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `subjects_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
@@ -175,4 +174,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-17 13:32:22
+-- Dump completed on 2023-12-08 16:46:29

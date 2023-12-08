@@ -21,7 +21,7 @@ CREATE TABLE subjects (
   absences INT,  -- 欠席数
   tardies INT,  -- 遅刻数
   memo VARCHAR(255),  -- メモ
-  isActive BOOLEAN NOT NULL DEFAULT TRUE, --有効かどうか(無効だと科目リストに追加できない)
+  isActive BOOLEAN NOT NULL DEFAULT TRUE, -- 有効かどうか(無効だと科目リストに追加できない)
   FOREIGN KEY (user_id) REFERENCES users(id)  -- ユーザーIDの外部キー
 );
 -- subject_teachers テーブルの作成
