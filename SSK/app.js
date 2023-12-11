@@ -155,7 +155,7 @@ app.post('/scrapeSubjects', (req, res) => {
 function getSubjectsByDay(timetableData, dayOfWeek) {
   const subjects = [];
   for (let i = 0; i < 4; i++) {
-    const subjectData = timetableData.find(data => data.day_of_week === dayOfWeek && data.time_slot === i+1);
+    const subjectData = timetableData.find(data => data.day_of_week === dayOfWeek && data.time_slot === i + 1);
     if (subjectData) {
       subjects[i] = subjectData;
     } else {
@@ -241,7 +241,16 @@ app.get('/', (req, res) => {
 
 
 app.get('/task', (req, res) => {
-  res.render('task.ejs');
+  const userId = req.session.userId; // セッションからユーザーIDを取得
+
+  const query = 'SELECT * FROM tasks WHERE user_id = ?'; // 仮のクエリ
+  connection.query(query, [userId], (err, tasks) => {
+    if (err) {
+      console.error('タスクデータの取得中にエラーが発生しました。', err);
+      return res.status(500).send('データ取得エラー');
+    }
+    res.render('task.ejs', { tasks });
+  });
 });
 
 app.get('/new-task', (req, res) => {
