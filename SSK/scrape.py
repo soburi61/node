@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import re
-
-def scrape_subjects(school, department, grade):
+import json
+import sys
+def scrape_subjects(kosen, department, grade):
     url = "https://syllabus.kosen-k.go.jp"
     try:
         res = requests.get(url)
@@ -11,26 +12,26 @@ def scrape_subjects(school, department, grade):
         print(f"URL: {url} へのリクエスト中にエラーが発生しました: {e}")
         return []
 
-    school_soup = BeautifulSoup(res.content, "html.parser")
+    kosen_soup = BeautifulSoup(res.content, "html.parser")
 
     # kosen名のURLを探す
-    school_anchor = school_soup.find("a", string=school)
-    if not school_anchor:
-        print(f"学校名 '{school}' が見つかりませんでした。")
+    kosen_anchor = kosen_soup.find("a", string=kosen)
+    if not kosen_anchor:
+        print(f"学校名 '{kosen}' が見つかりませんでした。")
         return []
-    school_url = url + school_anchor.get('href')
+    kosen_url = url + kosen_anchor.get('href')
 
     # HTMLを取得
     try:
-        res = requests.get(school_url)
+        res = requests.get(kosen_url)
         res.raise_for_status()
     except requests.exceptions.RequestException as e:
-        print(f"URL: {school_url} へのリクエスト中にエラーが発生しました: {e}")
+        print(f"URL: {kosen_url} へのリクエスト中にエラーが発生しました: {e}")
         return []
-    school_soup = BeautifulSoup(res.content, "html.parser")
+    kosen_soup = BeautifulSoup(res.content, "html.parser")
 
     # 学科名を含む要素を探す
-    department_heading = school_soup.find("h4", string=department)
+    department_heading = kosen_soup.find("h4", string=department)
     if not department_heading:
         print(f"学科名 '{department}' が見つかりませんでした。")
         return []
@@ -83,9 +84,7 @@ def scrape_subjects(school, department, grade):
         else:
             continue
 
-        teacher_td = subject.find("td", width="122")
-        if teacher_td:
-            teachers = [teacher.strip() for teacher in teacher_td.text.split(',')]
+        teacher = subject.find("td", width="122").text.strip()
 
         grade_class = "c" + str(grade) + "m"
         grade_elements = subject.find_all("td", class_=grade_class)
@@ -113,18 +112,22 @@ def scrape_subjects(school, department, grade):
         subject_info = {
             "subject_name": subject_name,
             "subject_type": subject_type,
-            "teachers": teachers,
+            "teacher": teacher,
             "credit": credit
         }
         subjects_info.append(subject_info)
 
     return subjects_info
 
-# 高専名、学科名、学年を指定して科目一覧を取得
-school = "熊本高等専門学校"  
-department = "人間情報システム工学科"  
-grade = "5" 
-subjects = scrape_subjects(school, department, grade)
-# 取得した科目一覧を表示
-for subject in subjects:
-    print(subject)
+if __name__ == "__main__":
+    # コマンドライン引数を取得
+    args = sys.argv[1:]  # 最初の引数はファイル名なので除外
+
+    # 引数が3つであることを確認
+    if len(args) != 3:
+        print("引数は3つ必要です: 学校名 学科名 学年")
+        sys.exit(1)
+
+    kosen, department, grade = args
+    subjects = scrape_subjects(kosen, department, grade)
+    print(json.dumps(subjects))

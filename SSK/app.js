@@ -11,7 +11,7 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+//mysqlの認証
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -22,12 +22,15 @@ const connection = mysql.createConnection({
   queueLimit: 0
 });
 
+//ログイン情報をセッションに保存するための設定
 app.use(session({
   secret: 'key12', // セッションIDを暗号化するためのキー
   resave: false, // セッションが変更されない限りセッションストアにセッションを再保存しない
   saveUninitialized: false, // 未初期化状態のセッションをストアに強制保存しない
   // その他のオプション（必要に応じて）
 }));
+
+
 
 connection.connect((err) => {
   if (err) {
@@ -38,28 +41,32 @@ connection.connect((err) => {
 });
 // ユーザー登録エンドポイント
 app.post('/register', (req, res) => {
-  const { id, email, password } = req.body;
-  console.log('Received data:', id, email, password); // データの確認
+  const { user_id, email, password, kosen, grade, department } = req.body;
+  console.log('Received data:', user_id, email, password, kosen, grade, department); // データの確認
 
   bcrypt.hash(password, saltRounds, (err, hash) => {
     if (err) {
       console.error('Hashing error:', err); // ハッシュ化エラーの確認
       return res.status(500).send('エラーが発生しました');
     }
-    connection.query('INSERT INTO users (id, email, password) VALUES (?, ?, ?)', [id, email, hash], (error, results) => {
+    // INSERT文を更新して、kosen, grade, departmentを含める
+    const sql = 'INSERT INTO users (user_id, email, password, kosen, grade, department) VALUES (?, ?, ?, ?, ?, ?)';
+    connection.query(sql, [user_id, email, hash, kosen, grade, department], (error, results) => {
       if (error) {
         console.error('Database error:', error); // データベースエラーの確認
         return res.status(500).send('ユーザー登録に失敗しました');
+      }else{
+        res.redirect('/login-page');
       }
-      res.status(201).send('ユーザー登録が完了しました');
+
     });
   });
 });
 
 // ログインエンドポイント
 app.post('/login', (req, res) => {
-  const { id, password } = req.body;
-  connection.query('SELECT * FROM users WHERE id = ?', [id], (error, results) => {
+  const { user_id, password } = req.body;
+  connection.query('SELECT * FROM users WHERE user_id = ?', [user_id], (error, results) => {
     if (error) {
       console.error('Database error:', error);
       return res.status(500).send('サーバーエラー');
@@ -77,28 +84,70 @@ app.post('/login', (req, res) => {
       }
 
       if (isMatch) {
-        req.session.userId = user.id; // セッションにユーザーIDを保存
-        res.send('ログインに成功しました');
+        console.log(user.user_id + 'がログインしました'); // ここでログを出力
+        req.session.regenerate((err)=> {
+          req.session.userId = user.user_id; // セッションにユーザーIDを保存
+          return res.redirect('/'); // レスポンスを送信
+        });
       } else {
+        console.log('ログイン失敗');
         res.status(401).send('パスワードが間違っています');
       }
     });
   });
 });
 
-app.get('/scrape', (req, res) => {
-  // Pythonスクリプトのパスと引数を指定
-  const scriptPath = 'path/to/your/python/script.py';
-  const args = 'arg1 arg2';
 
-  // Pythonスクリプトを実行
-  exec(`python ${scriptPath} ${args}`, (error, stdout, stderr) => {
+app.get('/logout',(req,res)=>{
+  req.session.destroy((err)=>{
+    res.redirect('/login-page');
+  })
+});
+
+app.get('/login-page', (req, res) => {
+  res.render('login.ejs');
+});
+
+
+app.get('/register-page', (req, res) => {
+  res.render('register.ejs');
+});
+
+//エンドポイントを呼び出すときに毎回認証
+//これより上はログイン認証してほしくないページを置く(そうしないとログインのループが発生してしまう)
+app.use((req,res,next)=>{
+  if(req.session.userId){
+    next();
+  }else{
+    res.redirect('/login-page');
+  }
+});
+
+app.post('/scrapeSubjects', (req, res) => {
+  const userId = req.session.userId;
+  const { kosen, department, grade } = req.body;
+
+  exec(`python scrape.py ${kosen} ${department} ${grade}`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing Python script: ${error}`);
-      res.status(500).send('An error occurred');
-    } else {
-      console.log(`Python script executed successfully: ${stdout}`);
-      res.send('Scraping completed successfully');
+      return res.status(500).send('スクリプト実行エラー');
+    }
+    try {
+      const subjects = JSON.parse(stdout);
+      // ここでsubjectsをデータベースに保存する
+      // 例えば、subjects.forEachでループしてINSERT文を実行する
+      subjects.forEach(subject => {
+        const sql = 'INSERT INTO subjects (subject_name, subject_type, teacher, credit) VALUES (?, ?, ?, ?)';
+        connection.query(sql, [subject.subject_name, subject.subject_type, subject.teachers ,subject.credit ], (err, result) => {
+          if (err) {
+            console.error('データベースエラー:', err);
+          }
+        });
+      });
+      res.redirect('/');
+    } catch (parseError) {
+      console.error(`JSON parsing error: ${parseError}`);
+      res.status(500).send('結果の解析エラー');
     }
   });
 });
@@ -132,8 +181,9 @@ app.post('/addSubject', (req, res) => {
 
 // 科目一覧を取得するAPI
 app.get('/getSubjects', (req, res) => {
-  const sql = 'SELECT * FROM subjects';
-  connection.query(sql, (err, subjects) => {
+  const userId = req.session.userId;
+  const sql = 'SELECT * FROM subjects WHERE user_id = ?'; // userIdでフィルタリング
+  connection.query(sql, [userId], (err, subjects) => {
     if (err) {
       console.error('科目一覧の取得に失敗しました。', err);
       res.status(500).send('科目取得エラー');
@@ -144,12 +194,13 @@ app.get('/getSubjects', (req, res) => {
 });
 
 app.post('/setClass', (req, res) => {
+  const userId = req.session.userId; // セッションからuserIdを取得
   const { subject_id, day_of_week, time_slot } = req.body;
 
-  const sql = `INSERT INTO timetable (subject_id, day_of_week, time_slot) VALUES (?, ?, ?)`;
+  const sql = `INSERT INTO timetable (user_id, subject_id, day_of_week, time_slot) VALUES (?, ?, ?, ?)`;
 
   // クエリを実行
-  connection.query(sql, [subject_id, day_of_week, time_slot], (err, results) => {
+  connection.query(sql, [userId, subject_id, day_of_week, time_slot], (err, results) => {
     if (err) {
       console.error('時間割に科目を追加する際にエラーが発生しました:', err);
       res.status(500).send('時間割追加エラー');
@@ -163,18 +214,19 @@ app.post('/setClass', (req, res) => {
 });
 
 app.get('/', (req, res) => {
+  const userId = req.session.userId; // セッションからuserIdを取得
+  //console.log(userId);
   // データベースから時間割データを取得するクエリ
   const timetableQuery = `
-  SELECT timetable.*, subjects.*, subject_teachers.teacher
+  SELECT timetable.*, subjects.*
   FROM timetable
   LEFT JOIN subjects ON timetable.subject_id = subjects.subject_id
-  LEFT JOIN subject_teachers ON timetable.subject_id = subject_teachers.subject_id
-  `;
+  WHERE timetable.user_id = ?`; // userIdでフィルタリング
 
-  connection.query(timetableQuery, (err, timetableData) => {
+  connection.query(timetableQuery, [userId], (err, timetableData) => {
     if (err) {
       console.error('時間割データの取得中にエラーが発生しました。', err);
-      res.status(500).send('データ取得エラー');
+      return res.status(500).send('データ取得エラー');
     } else {
       const monSubjects = getSubjectsByDay(timetableData, 'mon');
       const tueSubjects = getSubjectsByDay(timetableData, 'tue');
@@ -192,15 +244,6 @@ app.get('/task', (req, res) => {
   res.render('task.ejs');
 });
 
-app.get('/login_page', (req, res) => {
-  res.render('login.ejs');
-});
-
-
-app.get('/register_page', (req, res) => {
-  res.render('register.ejs');
-});
-
 app.get('/new-task', (req, res) => {
   res.render('new-task.ejs');
 });
@@ -208,6 +251,8 @@ app.get('/new-task', (req, res) => {
 app.get('/new-subject', (req, res) => {
   res.render('new-subject.ejs');
 });
+
+
 // 以下はサーバーの設定になるので, どれか選んでコメントアウトを外してください。
 // 卒検PC
 //console.log('10.133.90.88:3000/');

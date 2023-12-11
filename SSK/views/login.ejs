@@ -36,7 +36,7 @@
       display: block;
       margin-bottom: 5px;
     }
-    input[type="email"],
+    input[type="text"],
     input[type="password"] {
       width: 100%;
       padding: 8px;
@@ -64,8 +64,8 @@
             <h1>Login</h1>
             <form action="/login" method="post">
             <div class="form-group">
-                <label for="id">id:</label>
-                <input type="text" id="id" name="id" required>
+                <label for="user_id">id:</label>
+                <input type="text" id="user_id" name="user_id" required>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
@@ -74,7 +74,7 @@
             <button type="submit">Login</button>
             </form>
             <div class="register-link">
-                <p>アカウントをお持ちでないですか？ <a href="/register_page">登録する</a></p>
+                <p>アカウントをお持ちでないですか？ <a href="/register-page">登録する</a></p>
             </div>
         </div>
     </main>
