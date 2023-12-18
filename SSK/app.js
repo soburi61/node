@@ -5,13 +5,15 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const mysql = require('mysql2/promise');
 
+// exec関数をpromisifyして,async/awaitを使用可能にする
 const exec = util.promisify(require('child_process').exec);
 const saltRounds = 10;
 
 app.use(express.static('public'));
-// 必要なミドルウェアを追加して、JSON形式でリクエストボディを解析できるようにする
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+let connection; // データベース接続をグローバル変数として定義
 
 async function initializeDatabase() {
   try {
@@ -24,272 +26,220 @@ async function initializeDatabase() {
       connectionLimit: 10,
       queueLimit: 0
     });
-    // console.log(connection);
   } catch (err) {
-    console.error('データベースの初期化中にエラーが発生しました:', err);
+    console.error('An error occurred during database initialization:', err);
     process.exit(1);
   }
 }
 
-// 関数を呼び出し
 initializeDatabase();
 
-//ログイン情報をセッションに保存するための設定
 app.use(session({
-  secret: 'key12', // セッションIDを暗号化するためのキー
-  resave: false, // セッションが変更されない限りセッションストアにセッションを再保存しない
-  saveUninitialized: false, // 未初期化状態のセッションをストアに強制保存しない
-  // その他のオプション（必要に応じて）
+  secret: 'key12',
+  resave: false,
+  saveUninitialized: false,
 }));
 
-// ユーザー登録エンドポイント
 app.post('/register', async (req, res) => {
   const { user_id, email, password, kosen, grade, department } = req.body;
-
   try {
-    // const { stdout, stderr } = await exec(`python get_syllabus.py ${kosen} ${department}`);
-    // if (stderr) {
-    //   console.error('標準エラー出力:', stderr);
-    //   return res.status(500).send('シラバスURLの取得に失敗しました');
-    // }
-    //let syllabus_url = stdout.trim();
-    let syllabus_url = "a"
-    //console.log(syllabus_url);
+    const { stdout, stderr } = await exec(`python get_syllabus.py ${kosen} ${department}`);
+    if (stderr) {
+      console.error('Standard error output:', stderr);
+      return res.status(500).send('Failed to retrieve syllabus URL');
+    }
+    let syllabus_url = stdout.trim();
     const hash = await bcrypt.hash(password, saltRounds);
     const sql = 'INSERT INTO users (user_id, email, password, kosen, grade, department, syllabus_url) VALUES (?, ?, ?, ?, ?, ?, ?)';
     await connection.query(sql, [user_id, email, hash, kosen, grade, department, syllabus_url]);
-    console.log("/register "+user_id+","+email+","+hash+","+kosen+","+grade+","+department+","+syllabus_url);
-    res.redirect('/login-page');
+    console.log("/register");
+    console.log(req.body);
+    req.session.user_id = user_id;
+    res.redirect('/');
   } catch (error) {
-    console.error('エラーが発生しました:', error);
-    res.status(500).send('ユーザー登録に失敗しました');
+    console.error('error:', error);
+    res.status(500).send('User registration failed');
   }
 });
 
-app.get('/get-departments', async (req, res) => {
-  const kosen = req.query.kosen;
-  console.log("/get-departments");
-  try {
-    const { stdout, stderr } = await exec(`python get_department_names.py ${kosen}`);
-    if (stderr) {
-      throw new Error(`Error on stderr: ${stderr}`);
-    }
-    const departments = JSON.parse(stdout);
-    //console.log(departments);
-    res.json(departments);
-  } catch (error) {
-    console.error(`Error executing Python script: ${error}`);
-    res.status(500).send('スクリプト実行エラー');
-  }
-});
-
-// ログインエンドポイント
 app.post('/login', async (req, res) => {
   const { user_id, password } = req.body;
   try {
     const [results] = await connection.query('SELECT * FROM users WHERE user_id = ?', [user_id]);
     if (results.length === 0) {
-      return res.status(401).send('ユーザー名が見つかりません');
+      return res.status(401).send('User not found');
     }
     const user = results[0];
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      console.log('ログイン失敗');
-      return res.status(401).send('パスワードが間違っています');
+      console.log('Login failed');
+      return res.status(401).send('Incorrect password');
     }
-    console.log(user.user_id + 'がログインしました');
-    req.session.regenerate((err) => {
+    console.log(user.user_id + ' has logged in');
+    req.session.regenerate(async (err) => {
       if (err) {
         console.error('Session regeneration error:', err);
-        return res.status(500).send('セッションエラー');
+        return res.status(500).send('Session error');
       }
       req.session.user_id = user.user_id;
-      console.log(user.user_id);
-      return res.redirect('/');
+      res.redirect('/');
     });
   } catch (error) {
-    console.error('エラーが発生しました:', error);
-    return res.status(500).send('サーバーエラー');
+    console.error('Error occurred:', error);
+    return res.status(500).send('Server error');
   }
 });
 
-app.get('/logout',(req,res)=>{
-  req.session.destroy((err)=>{
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Session destruction error:', err);
+      return res.status(500).send('Error during session destruction');
+    }
     res.redirect('/login-page');
-  })
+  });
 });
 
 app.get('/login-page', (req, res) => {
   res.render('login.ejs');
 });
 
-
 app.get('/register-page', (req, res) => {
   res.render('register.ejs');
 });
 
+app.get('/get-departments', async (req, res) => {
+  console.log("/get-departments");
+  const kosen = req.query.kosen;
+  try {
+    const { stdout, stderr } = await exec(`python get_department_names.py ${kosen}`);
+    if (stderr) {
+      throw new Error(`Error on stderr: ${stderr}`);
+    }
+    const departments = JSON.parse(stdout);
+    console.log(departments);
+    res.json(departments);
+  } catch (error) {
+    console.error(`Error executing Python script: ${error}`);
+    res.status(500).send('Script execution error');
+  }
+});
 
-//エンドポイントを呼び出すときに毎回認証
-//これより上はログイン認証してほしくないページを置く(そうしないとログインのループが発生してしまう)
-app.use((req,res,next)=>{
-  if(req.session.user_id){
+app.use((req, res, next) => {
+  if (req.session.user_id) {
     next();
-  }else{
+  } else {
     res.redirect('/login-page');
   }
 });
 
-app.get('/getSubjects', (req, res) => {
-  //console.log("a");
-  const user_id = req.session.user_id;
-  //console.log("クエリ実行前");
-  const sql = 'SELECT kosen, department, grade FROM users WHERE user_id = ?';
-  connection.query(sql, [user_id], (err, results) => {
-    if (err) {
-      console.error('データベースエラー:', err);
-      return res.status(500).send('ユーザー情報の取得に失敗しました');
-    }
-    if (results.length === 0) {
-      return res.status(404).send('ユーザー情報が見つかりません');
-    }
-    const { kosen, department, grade } = results[0];
-    //console.log("クエリ実行後");
+app.post('/addSubject', async (req, res) => {
+  const newSubject = req.body;
+  try {
+    const sql = 'INSERT INTO subjects SET ?';
+    await connection.query(sql, newSubject);
+    res.send('Subject added successfully');
+  } catch (err) {
+    console.error('Error adding new subject:', err);
+    res.status(500).send('Error adding subject');
+  }
+});
 
-    exec(`python get_subjects.py ${kosen} ${department} ${grade}`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`Error executing Python script: ${error}`);
-        return res.status(500).send('スクリプト実行エラー');
-      }
-      try {
-        const subjects = JSON.parse(stdout);
-        const insertPromises = subjects.map(subject => {
-          return new Promise((resolve, reject) => {
-            const sql = 'INSERT INTO subjects (user_id, subject_name, subject_type, teacher, credit) VALUES (?, ?, ?, ?, ?)';
-            connection.query(sql, [user_id, subject.subject_name, subject.subject_type, subject.teachers ,subject.credit ], (err, result) => {
-              if (err) {
-                return reject(err);
-              }
-              resolve(result);
-            });
-          });
-        });
-  
-        Promise.all(insertPromises).then(() => {
-          res.redirect('/');
-        }).catch(err => {
-          console.error('データベースエラー:', err);
-          res.status(500).send('科目追加エラー');
-        });
-      } catch (parseError) {
-        console.error(`JSON parsing error: ${parseError}`);
-        res.status(500).send('結果の解析エラー');
-      }
-    });
-  });
+app.post('/setClass', async (req, res) => {
+  const user_id = req.session.user_id;
+  const { subject_id, day_of_week, time_slot } = req.body;
+  try {
+    const sql = `INSERT INTO timetable (user_id, subject_id, day_of_week, time_slot) VALUES (?, ?, ?, ?)`;
+    await connection.query(sql, [user_id, subject_id, day_of_week, time_slot]);
+    res.json({ success: true, message: 'Class added to timetable successfully' });
+  } catch (err) {
+    console.error('Error adding class to timetable:', err);
+    res.status(500).send('Error adding class to timetable');
+  }
 });
 
 async function getSubjectsByDay(timetableData, dayOfWeek) {
   const subjects = [];
   for (let i = 0; i < 4; i++) {
     const subjectData = timetableData.find(data => data.day_of_week === dayOfWeek && data.time_slot === i + 1);
-    if (subjectData) {
-      subjects[i] = subjectData;
-    } else {
-      subjects[i] = null;
-    }
+    subjects[i] = subjectData || null;
   }
   return subjects;
 }
 
-// 新しい科目を追加するAPI
-app.post('/addSubject', (req, res) => {
-  const newSubject = req.body; // 新しい科目のデータを取得（例：{ subject_name: '数学', ... }）
-  const sql = 'INSERT INTO subjects SET ?';
-  connection.query(sql, newSubject, (err, result) => {
-    if (err) {
-      console.error('新しい科目の追加に失敗しました。', err);
-      res.status(500).send('科目追加エラー');
-    } else {
-      res.send('科目を追加しました。');
-    }
-  });
-});
-
-// 科目一覧を取得するAPI
-app.get('/getSubjects', (req, res) => {
+app.get('/getSubjects', async (req, res) => {
+  console.log('/getSubjects');
   const user_id = req.session.user_id;
-  const sql = 'SELECT * FROM subjects WHERE user_id = ?'; // user_idでフィルタリング
-  connection.query(sql, [user_id], (err, subjects) => {
-    if (err) {
-      console.error('科目一覧の取得に失敗しました。', err);
-      res.status(500).send('科目取得エラー');
-    } else {
-      res.json(subjects);
-    }
-  });
-});
-
-app.post('/setClass', (req, res) => {
-  const user_id = req.session.user_id; // セッションからuser_idを取得
-  const { subject_id, day_of_week, time_slot } = req.body;
-
-  const sql = `INSERT INTO timetable (user_id, subject_id, day_of_week, time_slot) VALUES (?, ?, ?, ?)`;
-
-  // クエリを実行
-  connection.query(sql, [user_id, subject_id, day_of_week, time_slot], (err, results) => {
-    if (err) {
-      console.error('時間割に科目を追加する際にエラーが発生しました:', err);
-      res.status(500).send('時間割追加エラー');
-    } else {
-      // 成功した場合、successプロパティをtrueに設定
-      //console.log("Query Result:", results);
-
-      res.json({ success: true, message: '時間割に科目を追加しました', results });
-    }
-  });
-});
-
-app.get('/', async (req, res) => {
-  const user_id = req.session.user_id; // セッションからuser_idを取得
-  console.log(user_id);
-  // データベースから時間割データを取得するクエリ
-  const timetableQuery = `
-  SELECT timetable.*, subjects.*
-  FROM timetable
-  LEFT JOIN subjects ON timetable.subject_id = subjects.subject_id
-  WHERE timetable.user_id = ?`; // user_idでフィルタリング
-
   try {
-    const [timetableData] = await connection.query(timetableQuery, [user_id]);
-    console.log("Query executed");
-
-    const monSubjects = getSubjectsByDay(timetableData, 'mon');
-    const tueSubjects = getSubjectsByDay(timetableData, 'tue');
-    const wedSubjects = getSubjectsByDay(timetableData, 'wed');
-    const thuSubjects = getSubjectsByDay(timetableData, 'thu');
-    const friSubjects = getSubjectsByDay(timetableData, 'fri');
-
-    // 取得したデータをEJSテンプレートに渡す
-    res.render('top.ejs', { monSubjects, tueSubjects, wedSubjects, thuSubjects, friSubjects });
+    const sql = 'SELECT * FROM subjects WHERE user_id = ?';
+    const [subjects] = await connection.query(sql, [user_id]);
+    res.json(subjects);
   } catch (err) {
-    console.error('時間割データの取得中にエラーが発生しました。', err);
-    res.status(500).send('データ取得エラー');
+    console.error('Error retrieving subjects:', err);
+    res.status(500).send('Error retrieving subjects');
   }
 });
 
-
-
-app.get('/task', (req, res) => {
-  const user_id = req.session.user_id; // セッションからユーザーIDを取得
-
-  const query = 'SELECT * FROM tasks WHERE user_id = ?'; // 仮のクエリ
-  connection.query(query, [user_id], (err, tasks) => {
-    if (err) {
-      console.error('タスクデータの取得中にエラーが発生しました。', err);
-      return res.status(500).send('データ取得エラー');
+app.get('/importSubjects', async (req, res) => {
+  console.log('/importSubjects');
+  const user_id = req.session.user_id;
+  try {
+    const [results] = await connection.query('SELECT kosen, department, grade FROM users WHERE user_id = ?', [user_id]);
+    if (results.length === 0) {
+      return res.status(404).send('User not found');
     }
+    const { kosen, department, grade } = results[0];
+    const { stdout, stderr } = await exec(`python get_subjects.py ${kosen} ${department} ${grade}`);
+    if (stderr) {
+      throw new Error(`Error on stderr: ${stderr}`);
+    }
+    const subjects = JSON.parse(stdout);
+    const insertPromises = subjects.map(subject => {
+      const sql = 'INSERT INTO subjects (user_id, subject_name, subject_type, teacher, credit) VALUES (?, ?, ?, ?, ?)';
+      return connection.query(sql, [user_id, subject.subject_name, subject.subject_type, subject.teachers, subject.credit]);
+    });
+    await Promise.all(insertPromises);
+    res.redirect('/');
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Error adding subjects');
+  }
+});
+
+app.get('/', async (req, res) => {
+  const user_id = req.session.user_id;
+  try {
+    const timetableQuery = `
+    SELECT timetable.*, subjects.*
+    FROM timetable
+    LEFT JOIN subjects ON timetable.subject_id = subjects.subject_id
+    WHERE timetable.user_id = ?`;
+
+    const [timetableData] = await connection.query(timetableQuery, [user_id]);
+
+    const monSubjects = await getSubjectsByDay(timetableData, 'mon');
+    const tueSubjects = await getSubjectsByDay(timetableData, 'tue');
+    const wedSubjects = await getSubjectsByDay(timetableData, 'wed');
+    const thuSubjects = await getSubjectsByDay(timetableData, 'thu');
+    const friSubjects = await getSubjectsByDay(timetableData, 'fri');
+
+    res.render('top.ejs', { monSubjects, tueSubjects, wedSubjects, thuSubjects, friSubjects });
+  } catch (err) {
+    console.error('Error retrieving timetable data:', err);
+    res.status(500).send('Error retrieving data');
+  }
+});
+
+app.get('/task', async (req, res) => {
+  const user_id = req.session.user_id;
+  try {
+    const query = 'SELECT * FROM tasks WHERE user_id = ?';
+    const [tasks] = await connection.query(query, [user_id]);
     res.render('task.ejs', { tasks });
-  });
+  } catch (err) {
+    console.error('Error retrieving task data:', err);
+    res.status(500).send('Error retrieving data');
+  }
 });
 
 app.get('/new-task', (req, res) => {
@@ -299,7 +249,6 @@ app.get('/new-task', (req, res) => {
 app.get('/new-subject', (req, res) => {
   res.render('new-subject.ejs');
 });
-
 
 // 以下はサーバーの設定になるので, どれか選んでコメントアウトを外してください。
 // 卒検PC

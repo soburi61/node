@@ -31,10 +31,14 @@ if __name__ == "__main__":
     # コマンドライン引数を取得
     args = sys.argv[1:]  # 最初の引数はファイル名なので除外
 
-    # 引数が3つであることを確認
+    # 引数が2つであることを確認
     if len(args) != 2:
         print("引数は2つです: 学校名 学科")
         sys.exit(1)
 
-    url = get_syllabus(args)
+    # 個別の引数を抽出
+    kosen, department = args
+
+    # 関数を呼び出す
+    url = get_syllabus(kosen, department)
     print(url)
