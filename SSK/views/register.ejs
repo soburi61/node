@@ -3,142 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <title>Register</title>
-  <%- include('head.ejs') %>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #f7f7f7;
-    }
-    .register-container {
-      background: white;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 4px;
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-  </style>
+  
+  <link href="/css/login.css" rel="stylesheet">
   <!-- スタイリングは login.ejs に似せることができます -->
 </head>
 <body>
-  <div class="register-container">
-    <h1>Register</h1>
-    <form action="/register" method="post">
-      <div class="form-group">
-        <label for="user_id">ID<span style="color: red;">*</span>:</label>
-        <input type="text" id="user_id" name="user_id" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email<span style="color: red;">*</span>:</label>
-        <input type="email" id="email" name="email" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password<span style="color: red;">*</span>:</label>
-        <input type="password" id="password" name="password" required>
-      </div>
-      <div class="form-group">
+  <main>
+    <div class="container">
+      <h1>Register</h1>
+      <form action="/register" method="post">
         <div class="form-group">
-          <label for="kosen">所属高専名:</label>
-          <select id="kosen" name="kosen">
+          <label for="user_id">ID<span style="color: red;">*</span>:</label>
+          <input type="text" id="user_id" name="user_id" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email<span style="color: red;">*</span>:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password<span style="color: red;">*</span>:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+          <div class="form-group">
+            <label for="kosen">所属高専名<span style="color: red;">*</span>:</label>
+            <select id="kosen" name="kosen" required>
+              <option value="">選択してください</option>
+              <option value="函館工業高等専門学校">函館工業高等専門学校</option>
+              <option value="苫小牧工業高等専門学校">苫小牧工業高等専門学校</option>
+              <option value="釧路工業高等専門学校">釧路工業高等専門学校</option>
+              <option value="旭川工業高等専門学校">旭川工業高等専門学校</option>
+              <option value="八戸工業高等専門学校">八戸工業高等専門学校</option>
+              <option value="一関工業高等専門学校">一関工業高等専門学校</option>
+              <option value="仙台高等専門学校">仙台高等専門学校</option>
+              <option value="秋田工業高等専門学校">秋田工業高等専門学校</option>
+              <option value="鶴岡工業高等専門学校">鶴岡工業高等専門学校</option>
+              <option value="福島工業高等専門学校">福島工業高等専門学校</option>
+              <option value="茨城工業高等専門学校">茨城工業高等専門学校</option>
+              <option value="小山工業高等専門学校">小山工業高等専門学校</option>
+              <option value="群馬工業高等専門学校">群馬工業高等専門学校</option>
+              <option value="木更津工業高等専門学校">木更津工業高等専門学校</option>
+              <option value="東京工業高等専門学校">東京工業高等専門学校</option>
+              <option value="長岡工業高等専門学校">長岡工業高等専門学校</option>
+              <option value="長野工業高等専門学校">長野工業高等専門学校</option>
+              <option value="富山高等専門学校">富山高等専門学校</option>
+              <option value="石川工業高等専門学校">石川工業高等専門学校</option>
+              <option value="福井工業高等専門学校">福井工業高等専門学校</option>
+              <option value="岐阜工業高等専門学校">岐阜工業高等専門学校</option>
+              <option value="沼津工業高等専門学校">沼津工業高等専門学校</option>
+              <option value="豊田工業高等専門学校">豊田工業高等専門学校</option>
+              <option value="鳥羽商船高等専門学校">鳥羽商船高等専門学校</option>
+              <option value="鈴鹿工業高等専門学校">鈴鹿工業高等専門学校</option>
+              <option value="舞鶴工業高等専門学校">舞鶴工業高等専門学校</option>
+              <option value="明石工業高等専門学校">明石工業高等専門学校</option>
+              <option value="奈良工業高等専門学校">奈良工業高等専門学校</option>
+              <option value="和歌山工業高等専門学校">和歌山工業高等専門学校</option>
+              <option value="米子工業高等専門学校">米子工業高等専門学校</option>
+              <option value="松江工業高等専門学校">松江工業高等専門学校</option>
+              <option value="津山工業高等専門学校">津山工業高等専門学校</option>
+              <option value="広島商船高等専門学校">広島商船高等専門学校</option>
+              <option value="呉工業高等専門学校">呉工業高等専門学校</option>
+              <option value="徳山工業高等専門学校">徳山工業高等専門学校</option>
+              <option value="宇部工業高等専門学校">宇部工業高等専門学校</option>
+              <option value="大島商船高等専門学校">大島商船高等専門学校</option>
+              <option value="阿南工業高等専門学校">阿南工業高等専門学校</option>
+              <option value="香川高等専門学校">香川高等専門学校</option>
+              <option value="新居浜工業高等専門学校">新居浜工業高等専門学校</option>
+              <option value="弓削商船高等専門学校">弓削商船高等専門学校</option>
+              <option value="高知工業高等専門学校">高知工業高等専門学校</option>
+              <option value="久留米工業高等専門学校">久留米工業高等専門学校</option>
+              <option value="有明工業高等専門学校">有明工業高等専門学校</option>
+              <option value="北九州工業高等専門学校">北九州工業高等専門学校</option>
+              <option value="佐世保工業高等専門学校">佐世保工業高等専門学校</option>
+              <option value="熊本高等専門学校">熊本高等専門学校</option>
+              <option value="大分工業高等専門学校">大分工業高等専門学校</option>
+              <option value="都城工業高等専門学校">都城工業高等専門学校</option>
+              <option value="鹿児島工業高等専門学校">鹿児島工業高等専門学校</option>
+              <option value="沖縄工業高等専門学校">沖縄工業高等専門学校</option>
+              <!-- 他の高専のオプションを追加 -->
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="grade">学年<span style="color: red;">*</span>:</label>
+          <input type="number" id="grade" name="grade" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="department">学科<span style="color: red;">*</span>:</label>
+          <select id="department" name="department" required>
             <option value="">選択してください</option>
-            <option value="函館工業高等専門学校">函館工業高等専門学校</option>
-            <option value="苫小牧工業高等専門学校">苫小牧工業高等専門学校</option>
-            <option value="釧路工業高等専門学校">釧路工業高等専門学校</option>
-            <option value="旭川工業高等専門学校">旭川工業高等専門学校</option>
-            <option value="八戸工業高等専門学校">八戸工業高等専門学校</option>
-            <option value="一関工業高等専門学校">一関工業高等専門学校</option>
-            <option value="仙台高等専門学校">仙台高等専門学校</option>
-            <option value="秋田工業高等専門学校">秋田工業高等専門学校</option>
-            <option value="鶴岡工業高等専門学校">鶴岡工業高等専門学校</option>
-            <option value="福島工業高等専門学校">福島工業高等専門学校</option>
-            <option value="茨城工業高等専門学校">茨城工業高等専門学校</option>
-            <option value="小山工業高等専門学校">小山工業高等専門学校</option>
-            <option value="群馬工業高等専門学校">群馬工業高等専門学校</option>
-            <option value="木更津工業高等専門学校">木更津工業高等専門学校</option>
-            <option value="東京工業高等専門学校">東京工業高等専門学校</option>
-            <option value="長岡工業高等専門学校">長岡工業高等専門学校</option>
-            <option value="長野工業高等専門学校">長野工業高等専門学校</option>
-            <option value="富山高等専門学校">富山高等専門学校</option>
-            <option value="石川工業高等専門学校">石川工業高等専門学校</option>
-            <option value="福井工業高等専門学校">福井工業高等専門学校</option>
-            <option value="岐阜工業高等専門学校">岐阜工業高等専門学校</option>
-            <option value="沼津工業高等専門学校">沼津工業高等専門学校</option>
-            <option value="豊田工業高等専門学校">豊田工業高等専門学校</option>
-            <option value="鳥羽商船高等専門学校">鳥羽商船高等専門学校</option>
-            <option value="鈴鹿工業高等専門学校">鈴鹿工業高等専門学校</option>
-            <option value="舞鶴工業高等専門学校">舞鶴工業高等専門学校</option>
-            <option value="明石工業高等専門学校">明石工業高等専門学校</option>
-            <option value="奈良工業高等専門学校">奈良工業高等専門学校</option>
-            <option value="和歌山工業高等専門学校">和歌山工業高等専門学校</option>
-            <option value="米子工業高等専門学校">米子工業高等専門学校</option>
-            <option value="松江工業高等専門学校">松江工業高等専門学校</option>
-            <option value="津山工業高等専門学校">津山工業高等専門学校</option>
-            <option value="広島商船高等専門学校">広島商船高等専門学校</option>
-            <option value="呉工業高等専門学校">呉工業高等専門学校</option>
-            <option value="徳山工業高等専門学校">徳山工業高等専門学校</option>
-            <option value="宇部工業高等専門学校">宇部工業高等専門学校</option>
-            <option value="大島商船高等専門学校">大島商船高等専門学校</option>
-            <option value="阿南工業高等専門学校">阿南工業高等専門学校</option>
-            <option value="香川高等専門学校">香川高等専門学校</option>
-            <option value="新居浜工業高等専門学校">新居浜工業高等専門学校</option>
-            <option value="弓削商船高等専門学校">弓削商船高等専門学校</option>
-            <option value="高知工業高等専門学校">高知工業高等専門学校</option>
-            <option value="久留米工業高等専門学校">久留米工業高等専門学校</option>
-            <option value="有明工業高等専門学校">有明工業高等専門学校</option>
-            <option value="北九州工業高等専門学校">北九州工業高等専門学校</option>
-            <option value="佐世保工業高等専門学校">佐世保工業高等専門学校</option>
-            <option value="熊本高等専門学校">熊本高等専門学校</option>
-            <option value="大分工業高等専門学校">大分工業高等専門学校</option>
-            <option value="都城工業高等専門学校">都城工業高等専門学校</option>
-            <option value="鹿児島工業高等専門学校">鹿児島工業高等専門学校</option>
-            <option value="沖縄工業高等専門学校">沖縄工業高等専門学校</option>
-            <!-- 他の高専のオプションを追加 -->
           </select>
         </div>
+        <button type="submit">Register</button>
+      </form>
+      <div class="login-link">
+        <p>すでにアカウントをお持ちですか？ <a href="/login-page">ログインする</a></p>
       </div>
-      <div class="form-group">
-        <label for="grade">学年:</label>
-        <input type="number" id="grade" name="grade" min="1">
-      </div>
-      <div class="form-group">
-        <label for="department">学科:</label>
-        <input type="text" id="department" name="department">
-      </div>
-      <button type="submit">Register</button>
-    </form>
-    <div class="login-link">
-      <p>すでにアカウントをお持ちですか？ <a href="/login-page">ログインする</a></p>
     </div>
-  </div>
+  </main>
+  
 </body>
+<script src="/js/select.js"></script>
 </html>

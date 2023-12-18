@@ -19,11 +19,12 @@ table th, table td {
 }
 .subject {
     width:19%;
-    
+    height:24.25%;
 }
 
 table th {
-    height:3vh;
+    height:3%;
+    width:5%;
     background-color: #f2f2f2;
 }
 
