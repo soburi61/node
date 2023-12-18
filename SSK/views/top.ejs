@@ -1,7 +1,7 @@
-<% function getSubjectDetail(subject) {
+r<% function getSubjectDetail(subject) {
     if (subject) {
         return `${subject.subject_name}
-            <span class="detail">${subject.subject_type} ${subject.credit}単位 ${subject.subject_location}
+            <span class="detail">${subject.subject_type} ${subject.credit}単位
                 欠課:${subject.absences} 遅刻:${subject.tardies}</span>
                 <button class='edit-subject-btn popup btn'><i class="fa-solid fa-pen-to-square"></i></button>`;
     }
@@ -9,7 +9,6 @@
 } %>
 
 <!DOCTYPE html>
-
 <html lang="ja">
 <head>
     <%- include('head.ejs') %>
@@ -40,26 +39,26 @@
           <% for (let i = 0; i < 4; i++) { %>
           <tr>
             <td ><%= i+1 %></td>
-            <td data-day="mon" data-time="<%= i+1 %>"><%- getSubjectDetail(monSubjects[i]) %></td>
-            <td data-day="tue" data-time="<%= i+1 %>"><%- getSubjectDetail(tueSubjects[i]) %></td>
-            <td data-day="wed" data-time="<%= i+1 %>"><%- getSubjectDetail(wedSubjects[i]) %></td>
-            <td data-day="thu" data-time="<%= i+1 %>"><%- getSubjectDetail(thuSubjects[i]) %></td>
-            <td data-day="fri" data-time="<%= i+1 %>"><%- getSubjectDetail(friSubjects[i]) %></td>
+            <td data-day="mon" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(monSubjects[i]) %></td>
+            <td data-day="tue" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(tueSubjects[i]) %></td>
+            <td data-day="wed" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(wedSubjects[i]) %></td>
+            <td data-day="thu" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(thuSubjects[i]) %></td>
+            <td data-day="fri" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(friSubjects[i]) %></td>
           </tr>
           <% } %>
       </table>
     </main>
   
-    <%- include('footer.ejs') %>
+    
     <div class="modal-container">
-        <div class="modal-body">
-          <!-- 閉じるボタン -->
-          <div class="modal-close">×</div>
-          <!-- モーダル内のコンテンツ -->
-          <div class="modal-content">
-            
-          </div>
+      <div class="modal-body">
+        <!-- 閉じるボタン -->
+        <div class="modal-close">×</div>
+        <!-- モーダル内のコンテンツ -->
+        <div class="modal-content">
+          
         </div>
       </div>
+    </div>
 </body>
 </html>

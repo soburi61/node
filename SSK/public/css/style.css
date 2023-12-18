@@ -39,12 +39,15 @@ nav{
 .menu-group {
     list-style: none;
     display:flex;
+    flex-wrap: nowrap;
+    margin:0 0;
 }
 .menu-item {
-    margin:0 2vw;
+    margin:0 1vw;
     display:block;
     color: #fff;
     text-decoration: none;
+    flex: 1;
 }
 /* サイドバー */
 #sidebar {
@@ -93,7 +96,7 @@ nav{
 
 main {
     margin-top:10vh;
-    min-height: 85vh;
+    min-height: 90vh;
     width:100%;
 }
 .detail {

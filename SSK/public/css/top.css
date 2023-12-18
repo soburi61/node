@@ -17,6 +17,10 @@ table th, table td {
     white-space: pre-line;
     position: relative;
 }
+.subject {
+    width:19%;
+    
+}
 
 table th {
     height:3vh;

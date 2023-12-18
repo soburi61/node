@@ -19,9 +19,9 @@ CREATE TABLE subjects (
   subject_type VARCHAR(255),  -- 科目の種類
   teacher VARCHAR(255), -- 教員の名前 複数の場合はコンマ区切り
   credit INT,  -- 単位数
-  absences INT,  -- 欠席数
-  tardies INT,  -- 遅刻数
-  memo VARCHAR(255),  -- メモ
+  absences INT DEFAULT 0,  -- 欠席数
+  tardies INT DEFAULT 0,  -- 遅刻数
+  memo VARCHAR(255) DEFAULT "",  -- メモ
   isActive BOOLEAN NOT NULL DEFAULT TRUE, -- 有効かどうか(無効だと科目リストに追加できない)
   FOREIGN KEY (user_id) REFERENCES users(user_id)  -- ユーザーIDの外部キー
 );
