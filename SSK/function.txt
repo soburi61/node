@@ -1,2 +1,5 @@
 mysqldump -u root -p ssk > backup.sql
-mysql -u root -p ssk < backup.sql
+mysql -u root -p ssk < backup.sql\
+
+todo
+欠課ボタンと遅刻ボタンを各マスに配置
