@@ -40,6 +40,41 @@ app.use(session({
   saveUninitialized: false,
 }));
 
+app.get('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Session destruction error:', err);
+      return res.status(500).send('Error during session destruction');
+    }
+    res.redirect('/login-page');
+  });
+});
+
+app.get('/login-page', (req, res) => {
+  res.render('login.ejs');
+});
+
+app.get('/register-page', (req, res) => {
+  res.render('register.ejs');
+});
+
+app.get('/get-departments', async (req, res) => {
+  console.log("/get-departments");
+  const kosen = req.query.kosen;
+  try {
+    const { stdout, stderr } = await exec(`python get_department_names.py ${kosen}`);
+    if (stderr) {
+      throw new Error(`Error on stderr: ${stderr}`);
+    }
+    const departments = JSON.parse(stdout);
+    console.log(departments);
+    res.json(departments);
+  } catch (error) {
+    console.error(`Error executing Python script: ${error}`);
+    res.status(500).send('Script execution error');
+  }
+});
+
 app.post('/register', async (req, res) => {
   const { user_id, email, password, kosen, grade, department } = req.body;
   try {
@@ -87,41 +122,6 @@ app.post('/login', async (req, res) => {
   } catch (error) {
     console.error('Error occurred:', error);
     return res.status(500).send('Server error');
-  }
-});
-
-app.get('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Session destruction error:', err);
-      return res.status(500).send('Error during session destruction');
-    }
-    res.redirect('/login-page');
-  });
-});
-
-app.get('/login-page', (req, res) => {
-  res.render('login.ejs');
-});
-
-app.get('/register-page', (req, res) => {
-  res.render('register.ejs');
-});
-
-app.get('/get-departments', async (req, res) => {
-  console.log("/get-departments");
-  const kosen = req.query.kosen;
-  try {
-    const { stdout, stderr } = await exec(`python get_department_names.py ${kosen}`);
-    if (stderr) {
-      throw new Error(`Error on stderr: ${stderr}`);
-    }
-    const departments = JSON.parse(stdout);
-    console.log(departments);
-    res.json(departments);
-  } catch (error) {
-    console.error(`Error executing Python script: ${error}`);
-    res.status(500).send('Script execution error');
   }
 });
 
