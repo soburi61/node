@@ -4,6 +4,8 @@ import re
 import json
 import sys 
 
+
+#新しい関数を定義
 #学科一覧のページのスープを返す
 def get_department_page(kosen):
     url = "https://syllabus.kosen-k.go.jp"
