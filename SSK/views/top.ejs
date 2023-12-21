@@ -1,11 +1,11 @@
 <% function getSubjectDetail(subject) {
-    if (subject) {
-        return `${subject.subject_name}
-            <span class="detail">${subject.subject_type} ${subject.credit}単位
-                欠課:${subject.absences} 遅刻:${subject.tardies}</span>
-                <button class='edit-subject-btn popup btn'><i class="fa-solid fa-pen-to-square"></i></button>`;
-    }
-    return `<button class='btn add-class'><i class="fa-solid fa-plus"></i></button>`;
+  if (subject) {
+      return `${subject.subject_name}
+          <span class="detail">${subject.subject_type} ${subject.credit}単位
+              欠課:${subject.absences} <button class='btn increase-absence min-btn' data-subject-id="${subject.subject_id}"><i class="fa-solid fa-plus"></i></button> 遅刻:${subject.tardies} <button class='btn increase-tardy min-btn' data-subject-id="${subject.subject_id}"><i class="fa-solid fa-plus"></i></button></span>
+              <button class='edit-subject-btn popup btn'><i class="fa-solid fa-pen-to-square"></i></button>`;
+  }
+  return `<button class='btn add-class'><i class="fa-solid fa-plus"></i></button>`;
 } %>
 
 <!DOCTYPE html>
