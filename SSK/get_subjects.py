@@ -3,28 +3,12 @@ from bs4 import BeautifulSoup
 import re
 import json
 import sys 
+from get_department_page import get_department_page
 
-
-#新しい関数を定義
-#学科一覧のページのスープを返す
-def get_department_page(kosen):
+#subjectsのjson形式のデータを返す
+def get_subjects(kosen, department, grade):
     url = "https://syllabus.kosen-k.go.jp"
-    try:
-        res = requests.get(url)
-        res.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        print(f"URL: {url} へのリクエスト中にエラーが発生しました: {e}")
-        return []
-
-    kosen_soup = BeautifulSoup(res.content, "html.parser")
-
-    # kosen名のURLを探す
-    kosen_anchor = kosen_soup.find("a", string=kosen)
-    if not kosen_anchor:
-        print(f"学校名 '{kosen}' が見つかりませんでした。")
-        return []
-    kosen_url = url + kosen_anchor.get('href')
-
+    kosen_url=get_department_page(kosen)
     # HTMLを取得
     try:
         res = requests.get(kosen_url)
@@ -33,14 +17,6 @@ def get_department_page(kosen):
         print(f"URL: {kosen_url} へのリクエスト中にエラーが発生しました: {e}")
         return []
     kosen_soup = BeautifulSoup(res.content, "html.parser")
-    return kosen_soup
-
-
-#subjectsのjson形式のデータを返す
-def get_subjects(kosen, department, grade):
-    url = "https://syllabus.kosen-k.go.jp"
-    kosen_soup=get_department_page(kosen)
-
     # 学科名を含む要素を探す
     department_heading = kosen_soup.find("h4", string=department)
     if not department_heading:

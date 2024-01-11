@@ -3,12 +3,19 @@ from bs4 import BeautifulSoup
 import re
 import json
 import sys
-from get_subjects import get_department_page 
+from get_department_page import get_department_page 
 
 def get_syllabus(kosen, department):
     url = "https://syllabus.kosen-k.go.jp"
-    kosen_soup=get_department_page(kosen)
-
+    kosen_url=get_department_page(kosen)
+    # HTMLを取得
+    try:
+        res = requests.get(kosen_url)
+        res.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        print(f"URL: {kosen_url} へのリクエスト中にエラーが発生しました: {e}")
+        return []
+    kosen_soup = BeautifulSoup(res.content, "html.parser")
     # 学科名を含む要素を探す
     department_heading = kosen_soup.find("h4", string=department)
     if not department_heading:

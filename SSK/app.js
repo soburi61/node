@@ -78,7 +78,7 @@ app.get('/get-departments', async (req, res) => {
 app.post('/register', async (req, res) => {
   const { user_id, email, password, kosen, grade, department } = req.body;
   try {
-    const { stdout, stderr } = await exec(`python get_syllabus.py ${kosen} ${department}`);
+    const { stdout, stderr } = await exec(`python get_syllabus_page.py ${kosen} ${department}`);
     if (stderr) {
       console.error('Standard error output:', stderr);
       return res.status(500).send('Failed to retrieve syllabus URL');
@@ -166,6 +166,22 @@ async function getSubjectsByDay(timetableData, dayOfWeek) {
   }
   return subjects;
 }
+
+app.get('/getSyllabusUrl', async (req, res) => {
+  const user_id = req.session.user_id;
+  try {
+    const [results] = await connection.query('SELECT syllabus_url FROM users WHERE user_id = ?', [user_id]);
+    if (results.length === 0) {
+      return res.status(404).send('User not found');
+    }
+    const syllabusUrl = results[0].syllabus_url;
+    console.log('/getSyllabusUrl:'+syllabusUrl);
+    res.json({ syllabusUrl });
+  } catch (err) {
+    console.error('Error retrieving syllabus URL:', err);
+    res.status(500).send('Error retrieving syllabus URL');
+  }
+});
 
 app.get('/getSubjects', async (req, res) => {
   console.log('/getSubjects');
