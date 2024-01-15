@@ -2,8 +2,8 @@
   if (subject) {
       return `${subject.subject_name}
           <span class="detail">${subject.subject_type} ${subject.credit}単位
-              欠課:${subject.absences} <button class='btn increase-absence min-btn' data-subject-id="${subject.subject_id}"><i class="fa-solid fa-plus"></i></button> 遅刻:${subject.tardies} <button class='btn increase-tardy min-btn' data-subject-id="${subject.subject_id}"><i class="fa-solid fa-plus"></i></button></span>
-              <button class='edit-subject-btn popup btn'><i class="fa-solid fa-pen-to-square"></i></button>`;
+              <button class='btn increase-absences' data-subject-id="${subject.subject_id}">欠課:${subject.absences} </button> <button class='btn increase-tardies' data-subject-id="${subject.subject_id}">遅刻:${subject.tardies} </button></span>
+              <button class='edit-subject-btn btn'><i class="fa-solid fa-pen-to-square"></i></button>`;
   }
   return `<button class='btn add-class'><i class="fa-solid fa-plus"></i></button>`;
 } %>
@@ -13,7 +13,6 @@
 <head>
     <%- include('head.ejs') %>
     <link href="/css/top.css" rel="stylesheet">
-    <script src="/js/add-class.js"></script>
 </head>
 <body>
     <%- include('header.ejs') %>
@@ -22,7 +21,7 @@
         <input type="text" placeholder="科目検索...">
       </div>
       <ul>
-        <li><a class="add-subject-btn popup">新しい科目</a></li>
+        <li><a class="add-subject-btn">新しい科目</a></li>
         <!-- ここに必要な要素を追加 -->
       </ul>
     </aside>
@@ -50,15 +49,9 @@
     </main>
   
     
-    <div class="modal-container">
-      <div class="modal-body">
-        <!-- 閉じるボタン -->
-        <div class="modal-close">×</div>
-        <!-- モーダル内のコンテンツ -->
-        <div class="modal-content">
-          
-        </div>
-      </div>
-    </div>
+    
 </body>
+<%- include('common-scripts.ejs') %>
+<script src="/js/add-class.js"></script>
+<script src="/js/increase-absences.js"></script>
 </html>

@@ -15,7 +15,7 @@
         <input type="text" placeholder="タスク検索...">
       </div>
       <ul>
-        <li><a class="add-task-btn popup">新しいタスク</a></li>
+        <li><a class="add-task-btn">新しいタスク</a></li>
         <!-- ここに必要な要素を追加 -->
       </ul>
     </aside>
@@ -121,15 +121,7 @@
     </main>
 
     
-    <div class="modal-container">
-      <div class="modal-body">
-        <!-- 閉じるボタン -->
-        <div class="modal-close">×</div>
-        <!-- モーダル内のコンテンツ -->
-        <div class="modal-content">
-        </div>
-      </div>
-    </div>
+    
     <script> 
     function updateTasks(boxId, sortValue, filterValue) {
       $.ajax({
@@ -157,5 +149,5 @@
 
     </script>
 </body>
-
+<%- include('common-scripts.ejs') %>
 </html>

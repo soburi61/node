@@ -196,6 +196,50 @@ app.get('/getSubjects', async (req, res) => {
   }
 });
 
+app.get('/increaseAbsences', async (req, res) => {
+  console.log("/increaseAbsences");
+  console.log(req.query);
+  const user_id = req.session.user_id;
+  const { subject_id } = req.query;
+  try {
+    const sql = 'SELECT absences FROM subjects WHERE user_id = ? AND subject_id = ?';
+    const [results] = await connection.query(sql, [user_id, subject_id]);
+    if (results.length === 0) {
+      return res.status(404).send('Subject not found');
+    }
+    const absences = results[0].absences + 1;
+    await connection.query('UPDATE subjects SET absences = ? WHERE user_id = ? AND subject_id = ?', [absences, user_id, subject_id]);
+    
+    // 増やした後の情報を取得してクライアントに返す
+    const [updatedResults] = await connection.query(sql, [user_id, subject_id]);
+    res.json({ absences: updatedResults[0].absences });
+  } catch (err) {
+    console.error('Error updating absences:', err);
+    res.status(500).send('Error updating absences');
+  }
+});
+
+app.get('/increaseTardies', async (req, res) => {
+  console.log("/increaseTardies");
+  const user_id = req.session.user_id;
+  const { subject_id } = req.query;
+  try {
+    const sql = 'SELECT tardies FROM subjects WHERE user_id = ? AND subject_id = ?';
+    const [results] = await connection.query(sql, [user_id, subject_id]);
+    if (results.length === 0) {
+      return res.status(404).send('Subject not found');
+    }
+    const tardies = results[0].tardies + 1;
+    await connection.query('UPDATE subjects SET tardies = ? WHERE user_id = ? AND subject_id = ?', [tardies, user_id, subject_id]);
+    // 増やした後の情報を取得してクライアントに返す
+    const [updatedResults] = await connection.query(sql, [user_id, subject_id]);
+    res.json({ tardies: updatedResults[0].tardies });
+  } catch (err) {
+    console.error('Error updating tardies:', err);
+    res.status(500).send('Error updating tardies');
+  }
+});
+
 app.get('/importSubjects', async (req, res) => {
   console.log('/importSubjects');
   const user_id = req.session.user_id;
