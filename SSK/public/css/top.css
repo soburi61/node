@@ -28,24 +28,8 @@ table th {
     background-color: #f2f2f2;
 }
 
-/* ボタンを右下に配置 */
-.add-class,.edit-subject-btn{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin:10px 10px;
-}
-.min-btn {
-    width: 1em;
-    height: 1em;
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 1em;
-    margin: 0 0;
-    padding: 0 0;
-    cursor: pointer;
-  }
+
+
 .subject-title{
     font-size: 1.2em;
     font-weight:bold;
@@ -60,3 +44,12 @@ label {
 ul{
     list-style: none;
   }
+/* ボタンを右下に配置 */
+.add-class-btn,.edit-subject-btn{
+    position: absolute;
+    border: none;
+    background-color: transparent; /* 背景を透明にする */
+    bottom: 0;
+    right: 0;
+    margin:5px 5px;
+}

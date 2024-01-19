@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // add-class ボタンがクリックされたら
-    $('body').on('click', '.add-class', function() {
+    $('body').on('click', '.add-class-btn', function() {
       const cell = $(this).parent(); // クリックされたセル（td）を取得
       const day = cell.data('day'); // 曜日を取得
       const time = cell.data('time'); // 時間を取得

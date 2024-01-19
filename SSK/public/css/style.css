@@ -175,3 +175,12 @@ input[type="range"] {
   width: 60%;
   margin-top: 10px;
 }
+.btn{
+  border: 1px solid #000; /* 枠線を付ける */
+  background-color: transparent; /* 背景を透明にする */
+  font-size: 1em; /* 文字の大きさを小さめに設定 */
+  padding: 5px 10px; /* ボタンのパディングを調整して小さくする */
+}
+.btn:hover {
+  background-color: rgb(192, 192, 192);
+}

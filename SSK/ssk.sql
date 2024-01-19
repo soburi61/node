@@ -43,10 +43,11 @@ CREATE TABLE tasks (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id VARCHAR(150) NOT NULL,
   name VARCHAR(255),
-  states VARCHAR(255),
+  states VARCHAR(255) DEFAULT "active", -- active,archive
   importance INT,
   lightness INT,
   deadline TIMESTAMP,
+  memo VARCHAR(255) DEFAULT "",
   priority FLOAT,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
