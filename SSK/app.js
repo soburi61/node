@@ -314,11 +314,11 @@ app.get('/new-subject', (req, res) => {
 // 卒検PC
 //console.log('10.133.90.88:3000/');
 //app.listen(3000,'10.133.90.88');
-// wifi
-//console.log('10.150.14.162:3000/')
-//app.listen(3000,'10.150.14.162');
 
-//app.listen(3000,'10.150.15.231');
+// wifi
+//console.log('10.150.19.104:3000/');
+//app.listen(3000,'10.150.19.104');
+
 // localhost
 console.log('localhost:3000/');
 app.listen(3000);
