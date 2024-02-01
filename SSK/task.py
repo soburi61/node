@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 import datetime
 import os
 
-tasks = []
-debag = True
 
 #--定義--
 # 重要度、締切日（日付）、タスクの軽さを入力変数とします
@@ -34,13 +32,6 @@ deadline['far'] = fuzz.trimf(deadline.universe, [30, 60, 60])
 priority['low'] = fuzz.trimf(priority.universe, [0, 0, 50])
 priority['medium'] = fuzz.trimf(priority.universe, [0, 50, 100])
 priority['high'] = fuzz.trimf(priority.universe, [50, 100, 100])
-if debag:
-    importance.view()
-    plt.show()
-    lightness.view()
-    plt.show()
-    deadline.view()
-    plt.show()
 
 # ルールを定義
 rule1 = ctrl.Rule(importance['low'] | deadline['far'] | lightness['light'], priority['low'])
@@ -85,33 +76,8 @@ def calculate_priority(name, importance_value, lightness_value, deadline_date):
     return priority_eval.output['priority']
 
 
-# タスクを優先度順に並び替える関数を定義します
-def sort_tasks(task_list):
-    # ラムダでソートを定義
-    task_list.sort(key=lambda x: calculate_priority(x["name"], x["importance"], x["lightness"],x["deadline_date"]), reverse=True)
-    return task_list
 
-# ファイル名を指定します
-task_file = "tasks.txt"
 
-# ファイルが存在する場合、タスクを読み込みます
-if os.path.exists(task_file):
-    with open(task_file, "r" ,encoding='utf-8') as file:
-        lines = file.readlines()
-        for line in lines:
-            task_data = line.strip().split(",")
-            if len(task_data) == 4:
-                name, importance, lightness, deadline_date = task_data
-                importance = int(importance)
-                lightness = int(lightness)
-                deadline_date = datetime.datetime.strptime(deadline_date, "%Y-%m-%d %H:%M:%S")
-                task = {
-                    "name": name,
-                    "importance": importance,
-                    "lightness": lightness,
-                    "deadline_date": deadline_date
-                }
-                tasks.append(task)
 
 if __name__ == "__main__":
     while True:
@@ -141,39 +107,6 @@ if __name__ == "__main__":
             minute = 59
         #------------------------------------------
         
-        # タスクを辞書形式でリストに追加
-        deadline_date = datetime.datetime(year, month, day, hour, minute)
-        task = {
-            "name": name,
-            "importance": importance,
-            "lightness": lightness,
-            "deadline_date": deadline_date
-        }
-        tasks.append(task)
 
-        # 追加したタスクの詳細を表示
-        print("")
-        print("[新しいタスクを追加しました]:")
-        print(f"  タスク名: {task['name']}")
-        print(f"  重要度: {task['importance']}")
-        print(f"  軽さ: {task['lightness']}")
-        print(f"  締切日: {task['deadline_date']}")
-        print("")
 
-    # タスクを優先度順に並び替えて結果を取得します
-    sorted_tasks = sort_tasks(tasks)
 
-    # 優先度順に並び替えたタスクを表示します
-    print("優先度順のタスクリスト:")
-    for i, task in enumerate(sorted_tasks, start=1):
-        print(f"タスク{i}:")
-        print(f"  名前: {task['name']}")
-        print(f"  重要度: {task['importance']}")
-        print(f"  軽さ: {task['lightness']}")
-        print(f"  締切日: {task['deadline_date'].strftime('%Y-%m-%d %I:%M %p')}")
-        print("")
-    
-    # タスクをファイルに書き込みます（utf-8エンコードを指定）
-    with open(task_file, "w", encoding='utf-8') as file:
-        for task in tasks:
-            file.write(f"{task['name']},{task['importance']},{task['lightness']},{task['deadline_date']}\n")

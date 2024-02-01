@@ -145,6 +145,20 @@ app.post('/addSubject', async (req, res) => {
   }
 });
 
+app.post('/addTask', async (req, res) => {
+  const user_id = req.session.user_id;
+  const { name, importance, lightness, deadline, memo } = req.body;
+  //priorityを計算
+  try {
+    const sql = 'INSERT INTO tasks (user_id, name, importance, lightness, deadline, memo, priority) VALUES (?, ?, ?, ?, ?, ?)';
+    await connection.query(sql, [user_id, name, importance, lightness, deadline, memo, priority]);
+    res.send('Task added successfully');
+  } catch (error) {
+    console.error('Error adding task:', error);
+    res.status(500).send('Error adding task');
+  }
+});
+
 app.post('/setClass', async (req, res) => {
   const user_id = req.session.user_id;
   const { subject_id, day_of_week, time_slot } = req.body;
