@@ -15,15 +15,15 @@
         <input type="text" placeholder="タスク検索...">
       </div>
       <ul>
-        <li><a class="add-task-btn" href="/new-task">新しいタスク</a></li>
+        <li><a class="add-task-btn" href="/newTask">新しいタスク</a></li>
         <!-- ここに必要な要素を追加 -->
       </ul>
     </aside>
     <main>
 
       <div class="container-pane">
-        <div id="calendar"></div>
-        <div id="task-list">
+        <!-- <div id="calendar"></div> -->
+        <div class="task-list">
           <p class="task-title">タスクリスト</p>
           <!-- 並び替えプルダウン -->
           <div class="label-select-container" id="1">
@@ -37,21 +37,10 @@
             </label>
           </div>
 
-          <!-- フィルタープルダウン -->
-          <div class="label-select-container" id="2">
-            <label for="filter">フィルター:
-              <select class="filter">
-                <option value="not-started">未実行</option>
-                <option value="in-progress">実行中</option>
-                <option value="completed">実行済み</option>
-              </select>
-            </label>
-          </div>
-
           <% tasks.forEach(task=> { %>
-            <div class="task-item popup" id="edit-task">
+            <div class="task-item" id="edit-task">
               <p>
-                <%= task.title %>
+                <%= task.name %>
               </p>
               <!-- その他のタスク情報をここに表示 -->
             </div>
@@ -59,7 +48,31 @@
 
         </div>
 
-        <div id="task-list">
+        <div class="task-list">
+          <p class="task-title">タスクリスト</p>
+          <!-- 並び替えプルダウン -->
+          <div class="label-select-container" id="2">
+            <label for="sort">並び替え:
+              <select class="sort">
+                <option value="priority">自動優先度</option>
+                <option value="importance">重要度</option>
+                <option value="lightness">軽さ</option>
+                <option value="deadline">締切</option>
+              </select>
+            </label>
+          </div>
+
+          <% tasks.forEach(task=> { %>
+            <div class="task-item" id="edit-task">
+              <p>
+                <%= task.name %>
+              </p>
+              <!-- その他のタスク情報をここに表示 -->
+            </div>
+            <% }); %>
+
+        </div>
+        <div class="task-list">
           <p class="task-title">タスクリスト</p>
           <!-- 並び替えプルダウン -->
           <div class="label-select-container" id="3">
@@ -73,25 +86,20 @@
             </label>
           </div>
 
-          <!-- フィルタープルダウン -->
-          <div class="label-select-container">
-            <label for="filter">フィルター:
-              <select class="filter">
-                <option value="not-started">未実行</option>
-                <option value="in-progress">実行中</option>
-                <option value="completed">実行済み</option>
-              </select>
-            </label>
-          </div>
-          <!-- 仮のタスク -->
-          
-           
-        </div>
+          <% tasks.forEach(task=> { %>
+            <div class="task-item" id="edit-task">
+              <p>
+                <%= task.name %>
+              </p>
+              <!-- その他のタスク情報をここに表示 -->
+            </div>
+            <% }); %>
 
-        <div id="task-list">
+        </div>
+        <div class="task-list">
           <p class="task-title">タスクリスト</p>
           <!-- 並び替えプルダウン -->
-          <div class="label-select-container">
+          <div class="label-select-container" id="4">
             <label for="sort">並び替え:
               <select class="sort">
                 <option value="priority">自動優先度</option>
@@ -102,52 +110,45 @@
             </label>
           </div>
 
-          <!-- フィルタープルダウン -->
-          <div class="label-select-container">
-            <label for="filter">フィルター:
-              <select class="filter">
-                <option value="not-started">未実行</option>
-                <option value="in-progress">実行中</option>
-                <option value="completed">実行済み</option>
+          <% tasks.forEach(task=> { %>
+            <div class="task-item" id="edit-task">
+              <p>
+                <%= task.name %>
+              </p>
+              <!-- その他のタスク情報をここに表示 -->
+            </div>
+            <% }); %>
+
+        </div>
+        <div class="task-list">
+          <p class="task-title">タスクリスト</p>
+          <!-- 並び替えプルダウン -->
+          <div class="label-select-container" id="1">
+            <label for="sort">並び替え:
+              <select class="sort">
+                <option value="priority">自動優先度</option>
+                <option value="importance">重要度</option>
+                <option value="lightness">軽さ</option>
+                <option value="deadline">締切</option>
               </select>
             </label>
           </div>
 
-          <!-- 仮のタスク -->
-          
+          <% tasks.forEach(task=> { %>
+            <div class="task-item" id="edit-task">
+              <p>
+                <%= task.name %>
+              </p>
+              <!-- その他のタスク情報をここに表示 -->
+            </div>
+            <% }); %>
+
         </div>
 
       </div>
     </main>
 
-    
-    
-    <script> 
-    function updateTasks(boxId, sortValue, filterValue) {
-      $.ajax({
-        url: `/task?boxId=${boxId}&sort=${sortValue}&filter=${filterValue}`,
-        type: 'GET',
-        success: function(tasks) {
-          // ここで取得したタスクをボックスに表示
-          const taskList = tasks.map(task => 
-            `<div class="task-item">${task.title}</div>` // 例
-          ).join('');
-          $(`#${boxId} .task-list`).html(taskList);
-        },
-        error: function(error) {
-          console.error('Error:', error);
-        }
-      });
-    }
-
-    $('.sort, .filter').on('change', function() {
-      const boxId = $(this).closest('.container-pane').attr('id');
-      const sortValue = $(`#${boxId} .sort`).val();
-      const filterValue = $(`#${boxId} .filter`).val();
-      updateTasks(boxId, sortValue, filterValue);
-    });
-
-    </script>
 </body>
+<script src="/js/show-tasks.js"></script>
 <%- include('common-scripts.ejs') %>
 </html>

@@ -11,14 +11,14 @@ p{
   justify-content: flex-end;
 }
 /* タスクリストのスタイリング */
-#task-list {
+.task-list {
   border: 2px solid #ccc;
   padding: 15px;
   width: fit-content;
   margin:0 2px;
 }
 
-#task-list h2 {
+.task-list h2 {
   margin-top: 0;
 }
 .task-title{

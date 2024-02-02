@@ -4,7 +4,6 @@ const util = require('util');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 const mysql = require('mysql2/promise');
-
 // exec関数をpromisifyして,async/awaitを使用可能にする
 const exec = util.promisify(require('child_process').exec);
 const saltRounds = 10;
@@ -41,25 +40,36 @@ app.use(session({
 }));
 
 app.get('/logout', (req, res) => {
+  console.log("/logout");
+  console.log(req.body);
+  console.log(req.session);
   req.session.destroy((err) => {
     if (err) {
       console.error('Session destruction error:', err);
       return res.status(500).send('Error during session destruction');
     }
-    res.redirect('/login-page');
+    res.redirect('/loginPage');
   });
 });
 
-app.get('/login-page', (req, res) => {
+app.get('/loginPage', (req, res) => {
+  console.log("/loginPage");
+  console.log(req.body);
+  console.log(req.session);
   res.render('login.ejs');
 });
 
-app.get('/register-page', (req, res) => {
+app.get('/registerPage', (req, res) => {
+  console.log("/registerPage");
+  console.log(req.body);
+  console.log(req.session);
   res.render('register.ejs');
 });
 
-app.get('/get-departments', async (req, res) => {
-  console.log("/get-departments");
+app.get('/getDepartments', async (req, res) => {
+  console.log("/getDepartments");
+  console.log(req.body);
+  console.log(req.session);
   const kosen = req.query.kosen;
   try {
     const { stdout, stderr } = await exec(`python get_department_names.py ${kosen}`);
@@ -76,6 +86,9 @@ app.get('/get-departments', async (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
+  console.log("/register");
+  console.log(req.body);
+  console.log(req.session);
   const { user_id, email, password, kosen, grade, department } = req.body;
   try {
     const { stdout, stderr } = await exec(`python get_syllabus_page.py ${kosen} ${department}`);
@@ -98,6 +111,9 @@ app.post('/register', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
+  console.log("/login");
+  console.log(req.body);
+  console.log(req.session);
   const { user_id, password } = req.body;
   try {
     const [results] = await connection.query('SELECT * FROM users WHERE user_id = ?', [user_id]);
@@ -129,11 +145,14 @@ app.use((req, res, next) => {
   if (req.session.user_id) {
     next();
   } else {
-    res.redirect('/login-page');
+    res.redirect('/loginPage');
   }
 });
 
 app.post('/addSubject', async (req, res) => {
+  console.log("/addSubject");
+  console.log(req.body);
+  console.log(req.session);
   const newSubject = req.body;
   try {
     const sql = 'INSERT INTO subjects SET ?';
@@ -146,13 +165,32 @@ app.post('/addSubject', async (req, res) => {
 });
 
 app.post('/addTask', async (req, res) => {
+  console.log("/addTask");
+  console.log(req.body);
+  console.log(req.session);
   const user_id = req.session.user_id;
-  const { name, importance, lightness, deadline, memo } = req.body;
-  //priorityを計算
+  let { name , importance, lightness, deadline, memo } = req.body;
+  if(name==''){
+    name='新しいタスク';
+  }
+  if(deadline==''){
+    deadline = null;
+  }
+  let priority = null;
+  if (importance && lightness && deadline) {
+    const { stdout, stderr } = await exec(`python calc_task_priority.py ${importance} ${lightness} ${deadline}`);
+    if (stderr) {
+      console.error(`Error on stderr: ${stderr}`);
+      return res.status(500).send('Script execution error');
+    }
+    priority = parseFloat(stdout);
+    console.log('Priority:', priority);
+  }
+
   try {
-    const sql = 'INSERT INTO tasks (user_id, name, importance, lightness, deadline, memo, priority) VALUES (?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO tasks (user_id, name, importance, lightness, deadline, memo, priority) VALUES (?, ?, ?, ?, ?, ?, ?)';
     await connection.query(sql, [user_id, name, importance, lightness, deadline, memo, priority]);
-    res.send('Task added successfully');
+    res.redirect('/task');
   } catch (error) {
     console.error('Error adding task:', error);
     res.status(500).send('Error adding task');
@@ -160,6 +198,9 @@ app.post('/addTask', async (req, res) => {
 });
 
 app.post('/setClass', async (req, res) => {
+  console.log("/setClass");
+  console.log(req.body);
+  console.log(req.session);
   const user_id = req.session.user_id;
   const { subject_id, day_of_week, time_slot } = req.body;
   try {
@@ -182,6 +223,9 @@ async function getSubjectsByDay(timetableData, dayOfWeek) {
 }
 
 app.get('/getSyllabusUrl', async (req, res) => {
+  console.log("/getSylaabusUrl");
+  console.log(req.query);
+  console.log(req.session);
   const user_id = req.session.user_id;
   try {
     const [results] = await connection.query('SELECT syllabus_url FROM users WHERE user_id = ?', [user_id]);
@@ -199,6 +243,8 @@ app.get('/getSyllabusUrl', async (req, res) => {
 
 app.get('/getSubjects', async (req, res) => {
   console.log('/getSubjects');
+  console.log(req.query);
+  console.log(req.session);
   const user_id = req.session.user_id;
   try {
     const sql = 'SELECT * FROM subjects WHERE user_id = ?';
@@ -210,9 +256,33 @@ app.get('/getSubjects', async (req, res) => {
   }
 });
 
+
+app.get('/getTasks', async (req, res) => {
+  console.log("/getTasks");
+  console.log(req.query);
+  console.log(req.session);
+  const user_id = req.session.user_id;
+  const sort = req.query;
+  try {
+    let query = 'SELECT * FROM tasks WHERE user_id = ?';
+    if (sort) {
+      query += ` ORDER BY ${sort}`;
+    }
+    const [tasks] = await connection.query(query, [user_id]);
+    console.log(query);
+    console.log(tasks);
+    res.json(tasks);
+  } catch (err) {
+    console.error('Error retrieving tasks:', err);
+    res.status(500).send('Error retrieving tasks');
+  }
+});
+
+
 app.get('/increaseAbsences', async (req, res) => {
   console.log("/increaseAbsences");
   console.log(req.query);
+  console.log(req.session);
   const user_id = req.session.user_id;
   const { subject_id } = req.query;
   try {
@@ -235,6 +305,8 @@ app.get('/increaseAbsences', async (req, res) => {
 
 app.get('/increaseTardies', async (req, res) => {
   console.log("/increaseTardies");
+  console.log(req.query);
+  console.log(req.session);
   const user_id = req.session.user_id;
   const { subject_id } = req.query;
   try {
@@ -256,6 +328,8 @@ app.get('/increaseTardies', async (req, res) => {
 
 app.get('/importSubjects', async (req, res) => {
   console.log('/importSubjects');
+  console.log(req.query);
+  console.log(req.session);
   const user_id = req.session.user_id;
   try {
     const [results] = await connection.query('SELECT kosen, department, grade FROM users WHERE user_id = ?', [user_id]);
@@ -281,6 +355,9 @@ app.get('/importSubjects', async (req, res) => {
 });
 
 app.get('/', async (req, res) => {
+  console.log('/')
+  console.log(req.query);
+  console.log(req.session);
   const user_id = req.session.user_id;
   try {
     const timetableQuery = `
@@ -305,6 +382,9 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/task', async (req, res) => {
+  console.log('/task')
+  console.log(req.query);
+  console.log(req.session);
   const user_id = req.session.user_id;
   try {
     const query = 'SELECT * FROM tasks WHERE user_id = ?';
@@ -316,11 +396,17 @@ app.get('/task', async (req, res) => {
   }
 });
 
-app.get('/new-task', (req, res) => {
+app.get('/newTask', (req, res) => {
+  console.log('/newTask')
+  console.log(req.query);
+  console.log(req.session);
   res.render('new-task.ejs');
 });
 
-app.get('/new-subject', (req, res) => {
+app.get('/newSubject', (req, res) => {
+  console.log('/newSubject')
+  console.log(req.query);
+  console.log(req.session);
   res.render('new-subject.ejs');
 });
 

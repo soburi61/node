@@ -4,7 +4,7 @@ from skfuzzy import control as ctrl
 import matplotlib.pyplot as plt
 import datetime
 import sys
-
+import json
 #--定義--
 # 重要度、締切日（日付）、タスクの軽さを入力変数とします
 importance = ctrl.Antecedent(np.arange(0, 11, 1), 'importance')
@@ -43,7 +43,7 @@ priority_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
 
 
 
-def calc_task_priority(name, importance_value, lightness_value, deadline_date):
+def calc_task_priority(importance_value, lightness_value, deadline_date):
 
 
     # 制御システムをシミュレーションに接続します
@@ -75,12 +75,16 @@ if __name__ == "__main__":
     args = sys.argv[1:]  # 最初の引数はファイル名なので除外
 
     # 引数が3つであることを確認
-    if len(args) != 1:
-        print("引数は1つです: 学校名")
+    if len(args) != 3:
+        print("引数は3つです")
+        print( datetime.datetime.now())
         sys.exit(1)
-
-    names = calc_task_priority(args[0])
-    print(json.dumps(names))
+    importance_value = int(args[0])
+    lightness_value = int(args[1])
+    deadline_date = datetime.datetime.strptime(args[2], "%Y-%m-%d")  # 文字列をdatetime.datetime型に変換
+    priority = calc_task_priority(importance_value, lightness_value, deadline_date)
+    print(json.dumps(priority))
+    
 
 
 
