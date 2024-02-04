@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const kosen = this.value;
     // 既存のオプションをクリア
     departmentSelect.innerHTML = '<option value="">選択してください</option>';
-    fetch(`/get-departments?kosen=${encodeURIComponent(kosen)}`)
+    fetch(`/getDepartments?kosen=${encodeURIComponent(kosen)}`)
       .then(response => response.json())
       .then(departments => {
         departments.forEach(department => {

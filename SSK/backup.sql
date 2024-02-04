@@ -60,7 +60,7 @@ CREATE TABLE `tasks` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` varchar(150) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `states` varchar(255) DEFAULT 'active',
+  `status` varchar(255) DEFAULT 'active',
   `importance` int DEFAULT NULL,
   `lightness` int DEFAULT NULL,
   `deadline` timestamp NULL DEFAULT NULL,

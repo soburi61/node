@@ -3,7 +3,7 @@
 
 <head>
   <%- include('head.ejs') %>
-    <link href="/css/task.css" rel="stylesheet">
+    <link href="/css/tasks.css" rel="stylesheet">
     <script src="/js/calender.js"></script>
     
 </head>
@@ -23,10 +23,10 @@
 
       <div class="container-pane">
         <!-- <div id="calendar"></div> -->
-        <div class="task-list">
+        <div class="task-container">
           <p class="task-title">タスクリスト</p>
           <!-- 並び替えプルダウン -->
-          <div class="label-select-container" id="1">
+          <div class="label-select-container" data-list-index="1">
             <label for="sort">並び替え:
               <select class="sort">
                 <option value="priority">自動優先度</option>
@@ -36,22 +36,15 @@
               </select>
             </label>
           </div>
-
-          <% tasks.forEach(task=> { %>
-            <div class="task-item" id="edit-task">
-              <p>
-                <%= task.name %>
-              </p>
-              <!-- その他のタスク情報をここに表示 -->
-            </div>
-            <% }); %>
-
+          <div class="task-list" data-list-index="1">
+          
+          </div>
         </div>
 
-        <div class="task-list">
+        <div class="task-container">
           <p class="task-title">タスクリスト</p>
           <!-- 並び替えプルダウン -->
-          <div class="label-select-container" id="2">
+          <div class="label-select-container" data-list-index="2">
             <label for="sort">並び替え:
               <select class="sort">
                 <option value="priority">自動優先度</option>
@@ -61,21 +54,14 @@
               </select>
             </label>
           </div>
-
-          <% tasks.forEach(task=> { %>
-            <div class="task-item" id="edit-task">
-              <p>
-                <%= task.name %>
-              </p>
-              <!-- その他のタスク情報をここに表示 -->
-            </div>
-            <% }); %>
-
+          <div class="task-list" data-list-index="2">
+          </div>
         </div>
-        <div class="task-list">
+
+        <div class="task-container">
           <p class="task-title">タスクリスト</p>
           <!-- 並び替えプルダウン -->
-          <div class="label-select-container" id="3">
+          <div class="label-select-container" data-list-index="3">
             <label for="sort">並び替え:
               <select class="sort">
                 <option value="priority">自動優先度</option>
@@ -85,21 +71,14 @@
               </select>
             </label>
           </div>
-
-          <% tasks.forEach(task=> { %>
-            <div class="task-item" id="edit-task">
-              <p>
-                <%= task.name %>
-              </p>
-              <!-- その他のタスク情報をここに表示 -->
-            </div>
-            <% }); %>
-
+          <div class="task-list" data-list-index="3">
+          </div>
         </div>
-        <div class="task-list">
+
+        <div class="task-container">
           <p class="task-title">タスクリスト</p>
           <!-- 並び替えプルダウン -->
-          <div class="label-select-container" id="4">
+          <div class="label-select-container" data-list-index="4">
             <label for="sort">並び替え:
               <select class="sort">
                 <option value="priority">自動優先度</option>
@@ -109,21 +88,14 @@
               </select>
             </label>
           </div>
-
-          <% tasks.forEach(task=> { %>
-            <div class="task-item" id="edit-task">
-              <p>
-                <%= task.name %>
-              </p>
-              <!-- その他のタスク情報をここに表示 -->
-            </div>
-            <% }); %>
-
+          <div class="task-list" data-list-index="4">
+          </div>
         </div>
-        <div class="task-list">
+        
+        <div class="task-container">
           <p class="task-title">タスクリスト</p>
           <!-- 並び替えプルダウン -->
-          <div class="label-select-container" id="1">
+          <div class="label-select-container" data-list-index="5">
             <label for="sort">並び替え:
               <select class="sort">
                 <option value="priority">自動優先度</option>
@@ -133,16 +105,8 @@
               </select>
             </label>
           </div>
-
-          <% tasks.forEach(task=> { %>
-            <div class="task-item" id="edit-task">
-              <p>
-                <%= task.name %>
-              </p>
-              <!-- その他のタスク情報をここに表示 -->
-            </div>
-            <% }); %>
-
+          <div class="task-list" data-list-index="5">
+          </div>
         </div>
 
       </div>

@@ -38,10 +38,19 @@ CREATE TABLE timetable (
   FOREIGN KEY (subject_id) REFERENCES subjects(subject_id)
 );
 
+-- categorys 
+CREATE TABLE categories(
+  category_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id VARCHAR(150) NOT NULL,
+  category_name VARCHAR(255),
+  FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
 -- tasks テーブルの作成
 CREATE TABLE tasks (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id VARCHAR(150) NOT NULL,
+  category_id INT NOT NULL,
   name VARCHAR(255),
   states VARCHAR(255) DEFAULT "active", -- active,archive
   importance INT,
@@ -49,7 +58,8 @@ CREATE TABLE tasks (
   deadline TIMESTAMP,
   memo VARCHAR(255) DEFAULT "",
   priority FLOAT,
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
 

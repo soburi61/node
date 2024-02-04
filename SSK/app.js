@@ -98,11 +98,13 @@ app.post('/register', async (req, res) => {
     }
     let syllabus_url = stdout.trim();
     const hash = await bcrypt.hash(password, saltRounds);
-    const sql = 'INSERT INTO users (user_id, email, password, kosen, grade, department, syllabus_url) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    let sql = 'INSERT INTO users (user_id, email, password, kosen, grade, department, syllabus_url) VALUES (?, ?, ?, ?, ?, ?, ?)';
     await connection.query(sql, [user_id, email, hash, kosen, grade, department, syllabus_url]);
     console.log("/register");
     console.log(req.body);
     req.session.user_id = user_id;
+    sql = 'INSERT INTO categories (user_id,category_name) VALUES (?, ?)';
+    await connection.query(sql, [user_id, "uncategorized"]);
     res.redirect('/');
   } catch (error) {
     console.error('error:', error);
@@ -190,7 +192,7 @@ app.post('/addTask', async (req, res) => {
   try {
     const sql = 'INSERT INTO tasks (user_id, name, importance, lightness, deadline, memo, priority) VALUES (?, ?, ?, ?, ?, ?, ?)';
     await connection.query(sql, [user_id, name, importance, lightness, deadline, memo, priority]);
-    res.redirect('/task');
+    res.redirect('/tasks');
   } catch (error) {
     console.error('Error adding task:', error);
     res.status(500).send('Error adding task');
@@ -223,7 +225,7 @@ async function getSubjectsByDay(timetableData, dayOfWeek) {
 }
 
 app.get('/getSyllabusUrl', async (req, res) => {
-  console.log("/getSylaabusUrl");
+  console.log("/getSylabusUrl");
   console.log(req.query);
   console.log(req.session);
   const user_id = req.session.user_id;
@@ -262,14 +264,15 @@ app.get('/getTasks', async (req, res) => {
   console.log(req.query);
   console.log(req.session);
   const user_id = req.session.user_id;
-  const sort = req.query;
+  const sort = req.query.sort;
   try {
     let query = 'SELECT * FROM tasks WHERE user_id = ?';
     if (sort) {
       query += ` ORDER BY ${sort}`;
     }
+    //console.log(query);
     const [tasks] = await connection.query(query, [user_id]);
-    console.log(query);
+    
     console.log(tasks);
     res.json(tasks);
   } catch (err) {
@@ -381,27 +384,53 @@ app.get('/', async (req, res) => {
   }
 });
 
-app.get('/task', async (req, res) => {
-  console.log('/task')
+app.get('/tasks', async (req, res) => {
+  console.log('/tasks')
+  console.log(req.query);
+  console.log(req.session);
+  res.render('tasks.ejs');
+  
+});
+
+app.get('/getCategories',async(req,res) => {
+  console.log('/getCategories');
   console.log(req.query);
   console.log(req.session);
   const user_id = req.session.user_id;
-  try {
-    const query = 'SELECT * FROM tasks WHERE user_id = ?';
-    const [tasks] = await connection.query(query, [user_id]);
-    res.render('task.ejs', { tasks });
-  } catch (err) {
-    console.error('Error retrieving task data:', err);
-    res.status(500).send('Error retrieving data');
+  const sql = 'SELECT * FROM categories WHERE user_id = ?';
+  try{
+    const [categories] = await connection.query(sql, [user_id]);
+    res.json({categories});
+  }catch (err){
+    console.error('Error retrieving categories:', err);
+  res.status(500).send('Error retrieving categories');
   }
 });
 
-app.get('/newTask', (req, res) => {
-  console.log('/newTask')
+app.get('/newTask', async(req, res) => {
+  console.log('/newTask');
   console.log(req.query);
   console.log(req.session);
   res.render('new-task.ejs');
 });
+
+app.post('/addCategory', async (req, res) => {
+  console.log('/addCategory');
+  console.log(req.body);
+  console.log(req.session);
+  const { newCategory } = req.body; // リクエストから新しいカテゴリ名を取得
+  const userId = req.session.user_id; // ユーザーIDを取得
+
+  try {
+    const sql = 'INSERT INTO categories (user_id, category_name) VALUES (?, ?)';
+    await connection.query(sql, [userId, newCategory]); // 新しいカテゴリをデータベースに追加
+    res.status(200).send('New category added successfully');
+  } catch (error) {
+    console.error('Error adding new category:', error);
+    res.status(500).send('Error adding new category');
+  }
+});
+
 
 app.get('/newSubject', (req, res) => {
   console.log('/newSubject')
@@ -419,6 +448,10 @@ app.get('/newSubject', (req, res) => {
 //console.log('10.150.19.104:3000/');
 //app.listen(3000,'10.150.19.104');
 
+// main pc
+//console.log('192.168.0.145:3000/');
+//app.listen(3000, '0.0.0.0');
+
 // localhost
-console.log('localhost:3000/');
+//console.log('localhost:3000/');
 app.listen(3000);

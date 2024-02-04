@@ -1,5 +1,5 @@
 input[type="text"], input[type="range"], input[type="date"], button {
-  margin: 5px 0; /* 要素の上下のマージンを追加 */
+  margin: 5px 5px; /* 要素の上下のマージンを追加 */
   text-align: left; /* テキストを左詰めにする */
 }
 
@@ -10,7 +10,7 @@ input[type="range"] {
 form {
   display: flex; /* フォーム内の要素を横並びにする */
   flex-direction: column; /* 縦方向に並べる */
-  align-items:left; /* 中央揃えにする */
+  align-items:left; 
 }
 .container {
   border: 1px solid #ccc; /* ボーダーを表示(薄め) */
@@ -31,7 +31,7 @@ textarea {
 label{
   text-align: left; /* テキストを左詰めにする */
 }
-.deadline-container {
+.deadline-container,.category-container {
   display: flex;
   align-items: center;
 }
@@ -39,4 +39,8 @@ label{
 /* 日付入力フィールドの横幅を最小限にする */
 input[type="date"] {
   width: auto; /* 幅を自動にする */
+}
+
+#newCategory {
+  flex: 1; /* 残りのスペースを全て占める */
 }

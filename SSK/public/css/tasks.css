@@ -11,7 +11,7 @@ p{
   justify-content: flex-end;
 }
 /* タスクリストのスタイリング */
-.task-list {
+.task-container {
   border: 2px solid #ccc;
   padding: 15px;
   width: fit-content;
@@ -27,6 +27,8 @@ p{
 }
 
 .task-item {
+  display: flex;
+  align-items: center;
   border: 1px solid #ccc;
   border-radius: 10px;  /* 角を丸くする */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* 影をつける */
@@ -57,27 +59,10 @@ label {
   padding: 0;  /* 余計なパディングを削除 */
 }
 
-#new-task {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 20px;
-}
-
-#new-task h2 {
-  margin-top: 0;
-}
-
-#new-task input[type="text"],
-#new-task input[type="date"],
-#new-task button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 8px;
-}
-
-#new-task input[type="range"] {
-  width: 100%;
-  margin-top: 10px;
+input{
+  display:inline;
+  margin-left:5px;
+  margin-right:5px;
 }
 
 h1 {

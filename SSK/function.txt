@@ -1,5 +1,5 @@
 mysqldump -u root -p ssk > backup.sql
-mysql -u root -p ssk < backup.sql\
+mysql -u root -p ssk < backup.sql
 
 todo
 科目の並び替え,表示
