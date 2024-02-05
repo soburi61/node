@@ -10,30 +10,30 @@
         <div class="container">
             <div id="new-task">
                 <form action="/addTask" method="post">
-                <input type="text" name="name" placeholder="新しいタスク名">
-                <label for="category">カテゴリ:</label>
-                <div class="category-container">
-                
-                    <select id="category" name="category">
+                    <input type="text" name="name" placeholder="新しいタスク名">
+                    <label for="category">カテゴリ:</label>
+                    <div class="category-container">
+                        
+                        <select class="categories" name="category_id">
 
-                    </select>
-                    <form id="addCategoryForm" action="/addCategory" method="post">
-                        <input type="text" id="newCategory" name="newCategory" placeholder="新しいカテゴリ名">
+                        </select>
+                        <input type="text" id="newCategory" placeholder="新しいカテゴリ名">
                         <button type="button" id="addCategoryBtn" class="btn">追加</button>
-                      </form>
-                </div>
-                <label for="importance">重要度:</label>
-                <input type="range" id="importance" name="importance" min="0" max="10">
-                <label for="lightness">軽さ:</label>
-                <input type="range" id="lightness" name="lightness" min="0" max="10">
-                <div class="deadline-container">
-                    <label for="deadline">期限:</label>
-                    <input type="date" name="deadline">
-                  </div>
-                <textarea id="memo" name="memo" placeholder="自由記述欄"></textarea>
-                <div style="text-align: right;">
-                    <button type="submit" class="btn">タスク追加</button>
-                  </div>
+                    </div>
+                    
+                    
+                    <label for="importance">重要度:</label>
+                    <input type="range" id="importance" name="importance" min="0" max="10">
+                    <label for="lightness">軽さ:</label>
+                    <input type="range" id="lightness" name="lightness" min="0" max="10">
+                    <div class="deadline-container">
+                        <label for="deadline">期限:</label>
+                        <input type="date" name="deadline">
+                    </div>
+                    <textarea id="memo" name="memo" placeholder="自由記述欄"></textarea>
+                    <div style="text-align: right;">
+                        <button type="submit" class="btn">タスク追加</button>
+                    </div>
                 </form>
             </div>
         </div>

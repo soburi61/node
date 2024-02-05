@@ -171,7 +171,7 @@ app.post('/addTask', async (req, res) => {
   console.log(req.body);
   console.log(req.session);
   const user_id = req.session.user_id;
-  let { name , importance, lightness, deadline, memo } = req.body;
+  let { name , category_id, importance, lightness, deadline, memo } = req.body;
   if(name==''){
     name='新しいタスク';
   }
@@ -190,8 +190,8 @@ app.post('/addTask', async (req, res) => {
   }
 
   try {
-    const sql = 'INSERT INTO tasks (user_id, name, importance, lightness, deadline, memo, priority) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    await connection.query(sql, [user_id, name, importance, lightness, deadline, memo, priority]);
+    const sql = 'INSERT INTO tasks (user_id, category_id, name, importance, lightness, deadline, memo, priority) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    await connection.query(sql, [user_id, category_id, name, importance, lightness, deadline, memo, priority]);
     res.redirect('/tasks');
   } catch (error) {
     console.error('Error adding task:', error);
@@ -265,13 +265,20 @@ app.get('/getTasks', async (req, res) => {
   console.log(req.session);
   const user_id = req.session.user_id;
   const sort = req.query.sort;
+  const category_id = req.query.category_id;
   try {
-    let query = 'SELECT * FROM tasks WHERE user_id = ?';
-    if (sort) {
-      query += ` ORDER BY ${sort}`;
+    let query = `SELECT * FROM tasks WHERE user_id = ? `;
+    if (category_id !== 0) {
+      query += `and category_id=${category_id} `;
     }
+    query += `ORDER BY ${sort}`;
     //console.log(query);
-    const [tasks] = await connection.query(query, [user_id]);
+    let tasks;
+    if(category_id === 0){
+      tasks = await connection.query(query, [user_id]);
+    }else{
+      tasks = await connection.query(query, [user_id, category_id]);
+    }
     
     console.log(tasks);
     res.json(tasks);
@@ -453,5 +460,5 @@ app.get('/newSubject', (req, res) => {
 //app.listen(3000, '0.0.0.0');
 
 // localhost
-//console.log('localhost:3000/');
+console.log('localhost:3000/');
 app.listen(3000);

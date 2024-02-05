@@ -1,31 +1,36 @@
 // 最初の表示時にupdateTasksを実行
 $(document).ready(function() {
-  updateTasks(1, 'priority'); // updateTasksを実行
-  updateTasks(2, 'priority');
-  updateTasks(3, 'priority');
-  updateTasks(4, 'priority');
-  updateTasks(5, 'priority');
+  updateTasks(1, 'priority', 0); // updateTasksを実行
+  updateTasks(2, 'priority', 0);
+  updateTasks(3, 'priority', 0);
+  updateTasks(4, 'priority', 0);
+  updateTasks(5, 'priority', 0);
 });
 
-function updateTasks(boxId, sort) {
+function updateTasks(boxId, sort, filter) {
   $.ajax({
-    url: `/getTasks?sort=${sort}`,
+    url: `/getTasks?sort=${sort}&filter=${filter}`,
     type: 'GET',
     success: function(tasks) {
-      const taskList = tasks.map(task => {
+      let taskList = tasks.map(task => {
         let displayValue = '未設定';
         if (task[sort] !== null) {
-          displayValue = sort === 'deadline' ? new Date(task[sort]).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }) : task[sort];
+          displayValue = sort === 'deadline' ? new Date(task[sort]).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }) : Math.round(task[sort]);
         }
-        displayValue = Number.isInteger(displayValue) ? displayValue : Math.round(displayValue);
         return `
-        <div class="task-item" id="edit-task" task-id="${task.id}">
+        <div class="task-item" task-id="${task.id}">
+          <div class="left-contents">
             <input type="checkbox" class="task-checkbox" data-task-id="${task.id}">
-          <p>${task.name} ${displayValue}</p>
+            <span>${task.name}</span>
+          </div>
+            <span> ${displayValue}</span>
         </div>`;
       }).join('');
-      $(`.task-list[data-list-index="${boxId}"]`).empty().html(taskList);
-      console.log(boxId);
+      taskList+=`
+      <a href="/newTask" class="btn">
+        タスク追加
+      </a>`
+      $(`.tasks-container[box-index="${boxId}"] .task-list`).empty().html(taskList);
     },
     error: function(error) {
       console.error('Error:', error);
@@ -33,9 +38,14 @@ function updateTasks(boxId, sort) {
   });
 }
 $('.sort').on('change', function() {
-  const boxId = $(this).closest('.label-select-container').data('list-index');
+  const boxId = $(this).closest('.tasks-container').attr('box-index');
   const sort = $(this).val();
-  updateTasks(boxId, sort);
+  const filter = $(this).closest('.tasks-container').find('.categories').val();
+  console.log(`boxId${boxId}`);
+  console.log(`sort${sort}`);
+  console.log(`filter${filter}`);
+
+  updateTasks(boxId, sort, filter);
 });
 // チェックボックスがクリックされたときのイベントハンドラを追加
 $(document).on('change', '.task-checkbox', function() {

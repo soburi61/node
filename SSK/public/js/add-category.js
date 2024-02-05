@@ -15,6 +15,7 @@ $('#addCategoryBtn').click(function() {
     data: JSON.stringify({ newCategory: newCategory }),
     success: function(data) {
       fetchUpdatedCategories(); // カテゴリメニューを動的に更新
+      $('#newCategory').val(''); // フィールドを初期化
     },
     error: function(error) {
       console.error('Error:', error);
@@ -26,7 +27,7 @@ $('#addCategoryBtn').click(function() {
   function fetchUpdatedCategories() {
     $.get('/getCategories', function(response) {
       const categories = response.categories; // カテゴリ配列を取得
-      const categorySelect = $('#category');
+      const categorySelect = $('.categories');
       categorySelect.empty(); // カテゴリメニューをクリア
       $.each(categories, function(index, category) {
         categorySelect.append($('<option>', {
@@ -39,6 +40,3 @@ $('#addCategoryBtn').click(function() {
       console.error('Error:', error);
     });
   }
-  $('#addCategoryBtn').click(function() {
-    $('#addCategoryForm').submit(); // addCategoryFormを送信
-  });
