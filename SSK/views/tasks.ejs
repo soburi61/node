@@ -38,6 +38,7 @@
           <div class="label-select-container">
             <label for="categories">カテゴリ:</label>
             <select class="categories" name="category_id">
+              <option value="0">ALL</option>
             </select>
           </div>
           <div class="task-list">
@@ -52,7 +53,7 @@
             <label for="sort">並び替え:</label>
             <select class="sort">
               <option value="priority">自動優先度</option>
-              <option value="importance">重要度</option>
+              <option value="importance" selected>重要度</option>
               <option value="lightness">軽さ</option>
               <option value="deadline">締切</option>
             </select>
@@ -60,6 +61,7 @@
           <div class="label-select-container">
             <label for="categories">カテゴリ:</label>
             <select class="categories" name="category_id">
+              <option value="0">ALL</option>
             </select>
           </div>
           <div class="task-list">
@@ -74,13 +76,14 @@
             <select class="sort">
               <option value="priority">自動優先度</option>
               <option value="importance">重要度</option>
-              <option value="lightness">軽さ</option>
+              <option value="lightness" selected>軽さ</option>
               <option value="deadline">締切</option>
             </select>
           </div>
           <div class="label-select-container">
             <label for="categories">カテゴリ:</label>
             <select class="categories" name="category_id">
+              <option value="0">ALL</option>
             </select>
           </div>
           <div class="task-list">
@@ -96,12 +99,13 @@
               <option value="priority">自動優先度</option>
               <option value="importance">重要度</option>
               <option value="lightness">軽さ</option>
-              <option value="deadline">締切</option>
+              <option value="deadline" selected>締切</option>
             </select>
           </div>
           <div class="label-select-container">
             <label for="categories">カテゴリ:</label>
             <select class="categories" name="category_id">
+              <option value="0">ALL</option>
             </select>
           </div>
           <div class="task-list">
@@ -123,6 +127,7 @@
           <div class="label-select-container">
             <label for="categories">カテゴリ:</label>
             <select class="categories" name="category_id">
+              <option value="0">ALL</option>
             </select>
           </div>
           <div class="task-list">
@@ -133,7 +138,7 @@
     </main>
 
 </body>
-<script src="/js/show-tasks.js"></script>
 <script src="/js/add-category.js"></script>
+<script src="/js/show-tasks.js"></script>
 <%- include('common-scripts.ejs') %>
 </html>

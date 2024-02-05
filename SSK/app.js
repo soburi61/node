@@ -100,11 +100,6 @@ app.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(password, saltRounds);
     let sql = 'INSERT INTO users (user_id, email, password, kosen, grade, department, syllabus_url) VALUES (?, ?, ?, ?, ?, ?, ?)';
     await connection.query(sql, [user_id, email, hash, kosen, grade, department, syllabus_url]);
-    console.log("/register");
-    console.log(req.body);
-    req.session.user_id = user_id;
-    sql = 'INSERT INTO categories (user_id,category_name) VALUES (?, ?)';
-    await connection.query(sql, [user_id, "uncategorized"]);
     res.redirect('/');
   } catch (error) {
     console.error('error:', error);
@@ -167,31 +162,31 @@ app.post('/addSubject', async (req, res) => {
 });
 
 app.post('/addTask', async (req, res) => {
-  console.log("/addTask");
-  console.log(req.body);
-  console.log(req.session);
   const user_id = req.session.user_id;
-  let { name , category_id, importance, lightness, deadline, memo } = req.body;
-  if(name==''){
-    name='新しいタスク';
-  }
-  if(deadline==''){
-    deadline = null;
-  }
+  let { name, category_id, importance, lightness, deadline, memo } = req.body;
+  name = name || '新しいタスク';
+  deadline = deadline || null;
+  category_id = category_id === '0' ? null : category_id;
   let priority = null;
+
   if (importance && lightness && deadline) {
-    const { stdout, stderr } = await exec(`python calc_task_priority.py ${importance} ${lightness} ${deadline}`);
-    if (stderr) {
-      console.error(`Error on stderr: ${stderr}`);
-      return res.status(500).send('Script execution error');
+    try {
+      const { stdout, stderr } = await exec(`python calc_task_priority.py ${importance} ${lightness} ${deadline}`);
+      if (stderr) {
+        console.error(`Error on stderr: ${stderr}`);
+        return res.status(500).send('Script execution error');
+      }
+      priority = parseFloat(stdout);
+    } catch (error) {
+      console.error('Error calculating priority:', error);
+      return res.status(500).send('Error calculating priority');
     }
-    priority = parseFloat(stdout);
-    console.log('Priority:', priority);
   }
 
+  const taskData = { user_id, category_id, name, importance, lightness, deadline, memo, priority };
   try {
-    const sql = 'INSERT INTO tasks (user_id, category_id, name, importance, lightness, deadline, memo, priority) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    await connection.query(sql, [user_id, category_id, name, importance, lightness, deadline, memo, priority]);
+    const sql = 'INSERT INTO tasks SET ?';
+    await connection.query(sql, taskData);
     res.redirect('/tasks');
   } catch (error) {
     console.error('Error adding task:', error);
@@ -265,21 +260,21 @@ app.get('/getTasks', async (req, res) => {
   console.log(req.session);
   const user_id = req.session.user_id;
   const sort = req.query.sort;
-  const category_id = req.query.category_id;
+  const category_id = parseInt(req.query.category, 10);
+  console.log(category_id);
   try {
-    let query = `SELECT * FROM tasks WHERE user_id = ? `;
+    let query = `SELECT * FROM tasks WHERE user_id = ? AND status = 'active' `;
+    let queryParams = [user_id]; // パラメータの配列を初期化
+  
+    // category_idが'0'でない場合はクエリとパラメータを更新
     if (category_id !== 0) {
-      query += `and category_id=${category_id} `;
+      query += `AND category_id = ? `;
+      queryParams.push(category_id); // category_idをパラメータに追加
     }
-    query += `ORDER BY ${sort}`;
-    //console.log(query);
-    let tasks;
-    if(category_id === 0){
-      tasks = await connection.query(query, [user_id]);
-    }else{
-      tasks = await connection.query(query, [user_id, category_id]);
-    }
-    
+  
+    query += `ORDER BY ${connection.escapeId(sort)}`; // ソート列をエスケープ
+    const [tasks] = await connection.query(query, queryParams); // クエリ実行
+    console.log(`query:${query}`);
     console.log(tasks);
     res.json(tasks);
   } catch (err) {

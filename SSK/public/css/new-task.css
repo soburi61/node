@@ -1,6 +1,8 @@
-input[type="text"], input[type="range"], input[type="date"], button {
-  margin: 5px 5px; /* 要素の上下のマージンを追加 */
+input, button,select,textarea {
+  margin: 5px 0px; /* 要素の上下のマージンを追加 */
   text-align: left; /* テキストを左詰めにする */
+  border: 1px solid rgb(118, 118, 118); /* 薄い黒のボーダー */
+  border-radius: 5px; /* 角を少し丸める */
 }
 
 input[type="range"] {
@@ -13,16 +15,13 @@ form {
   align-items:left; 
 }
 .container {
-  border: 1px solid #ccc; /* ボーダーを表示(薄め) */
   width: 50%; /* 横幅を狭くする */
   margin: 5px auto; /* 中央揃えにする */
   padding: 20px; /* 内側の余白を追加 */
+  border: 1px solid rgb(118, 118, 118); /* 薄い黒のボーダー */
+  border-radius: 5px; /* 角を少し丸める */
 }
 
-input[type="text"] {
-  width: 100%; /* 幅を100%にする */
-  margin-bottom: 10px; /* 下のマージンを追加 */
-}
 
 textarea {
   width: 100%; /* 幅を100%にする */
@@ -35,12 +34,17 @@ label{
   display: flex;
   align-items: center;
 }
-
+.category-container{
+  justify-content: space-between;
+}
 /* 日付入力フィールドの横幅を最小限にする */
 input[type="date"] {
   width: auto; /* 幅を自動にする */
 }
 
-#newCategory {
-  flex: 1; /* 残りのスペースを全て占める */
+span {
+  display:flex;
+  justify-content: flex-end;
+  color: rgb(118, 118, 118);
+  font-size: 0.6em;
 }

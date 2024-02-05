@@ -50,9 +50,9 @@ CREATE TABLE categories(
 CREATE TABLE tasks (
   id INT AUTO_INCREMENT PRIMARY KEY,
   user_id VARCHAR(150) NOT NULL,
-  category_id INT NOT NULL,
+  category_id INT,
   name VARCHAR(255),
-  states VARCHAR(255) DEFAULT "active", -- active,archive
+  status VARCHAR(255) DEFAULT "active", 
   importance INT,
   lightness INT,
   deadline TIMESTAMP,

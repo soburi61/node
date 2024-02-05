@@ -28,7 +28,6 @@ $('#addCategoryBtn').click(function() {
     $.get('/getCategories', function(response) {
       const categories = response.categories; // カテゴリ配列を取得
       const categorySelect = $('.categories');
-      categorySelect.empty(); // カテゴリメニューをクリア
       $.each(categories, function(index, category) {
         categorySelect.append($('<option>', {
           value: category.category_id,

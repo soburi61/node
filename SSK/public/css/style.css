@@ -131,3 +131,10 @@ input[type="range"] {
 .btn:hover {
   background-color: rgb(192, 192, 192);
 }
+
+.box {
+  padding: 1vh 1vw;
+  margin: 1vh 0vw;
+  border: 1px solid rgb(118, 118, 118); /* 薄い黒のボーダー */
+  border-radius: 5px; /* 角を少し丸める */
+}
