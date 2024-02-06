@@ -1,9 +1,15 @@
 // 最初の表示時にupdateTasksを実行
 $(document).ready(function() {
-  for (let i = 1; i <= 5; i++) {
-    updateTasks(i, $(`.tasks-container[box-index="${i}"] .sort`).val(), 0);
-  }
+  updateAllTasks();
 });
+
+function updateAllTasks(){
+  for (let i = 1; i <= 5; i++) {
+    const sort = $(`.tasks-container[box-index="${i}"] .sort`).val()
+    const category = $(`.tasks-container[box-index="${i}"] .categories`).val()
+    updateTasks(i, sort, category);
+  }
+}
 
 function updateTasks(boxId, sort, category) {
   $.ajax({
@@ -35,29 +41,21 @@ function updateTasks(boxId, sort, category) {
     }
   });
 }
-$('.sort').on('change', function() {
-  const boxId = $(this).closest('.tasks-container').attr('box-index');
-  const sort = $(this).val();
-  const category = $(this).closest('.tasks-container').find('.categories').val();
-  //console.log(`boxId${boxId}`);
-  //console.log(`sort${sort}`);
-  //console.log(`category${category}`);
-  updateTasks(boxId, sort, category);
-});
 $('.sort, .categories').on('change', function() {
   const boxId = $(this).closest('.tasks-container').attr('box-index');
   const sort = $(this).closest('.tasks-container').find('.sort').val();
-  const category = $(this).val();
+  const category = $(this).closest('.tasks-container').find('.categories').val();
   updateTasks(boxId, sort, category);
 });
 // チェックボックスがクリックされたときのイベントハンドラを追加
 $(document).on('change', '.task-checkbox', function() {
   const taskId = $(this).closest('.task-item').data('task-id');
   $.ajax({
-    url: `/updateTaskStatus`,
+    url: `/updateTasks`,
     type: 'POST',
     data: { id: taskId, status: 'inactive' },
     success: function(response) {
+      updateAllTasks();
       console.log(response);
     },
     error: function(error) {

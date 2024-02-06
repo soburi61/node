@@ -161,6 +161,8 @@ app.post('/addSubject', async (req, res) => {
   }
 });
 
+
+
 app.post('/addTask', async (req, res) => {
   const user_id = req.session.user_id;
   let { name, category_id, importance, lightness, deadline, memo } = req.body;
@@ -252,7 +254,31 @@ app.get('/getSubjects', async (req, res) => {
     res.status(500).send('Error retrieving subjects');
   }
 });
+app.post('/updateTask', async (req, res) => {
+  console.log("/updateTask");
+  console.log(req.body);
+  const user_id = req.session.user_id;
+  const { id, category_id, name, status, importance, lightness, deadline, memo } = req.body;
+  try {
+    const sql = 'UPDATE tasks SET category_id = ?, name = ?, status = ?, importance = ?, lightness = ?, deadline = ?, memo = ? WHERE id = ? AND user_id = ?';
+    await connection.query(sql, [category_id, name, status, importance, lightness, deadline, memo, id, user_id]);
+    res.json({ success: true, message: 'Task updated successfully' });
+  } catch (err) {
+    console.error('Error updating task:', err);
+    res.status(500).send('Error updating task');
+  }
+});
 
+app.get('/getTask', async (req, res) => {
+  const task_id = req.query.task_id;
+  try {
+    const [task] = await connection.query('SELECT * FROM tasks WHERE id = ?', [task_id]);
+    res.json(task);
+  } catch (err) {
+    console.error('Error retrieving task:', err);
+    res.status(500).send('Error retrieving task');
+  }
+});
 
 app.get('/getTasks', async (req, res) => {
   console.log("/getTasks");
