@@ -55,8 +55,8 @@ CREATE TABLE tasks (
   status VARCHAR(255) DEFAULT "active", 
   importance INT,
   lightness INT,
-  deadline TIMESTAMP,
-  memo VARCHAR(255) DEFAULT "",
+  deadline VARCHAR(10), -- 2024-02-07
+  memo VARCHAR(1024) DEFAULT "",
   priority FLOAT,
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (category_id) REFERENCES categories(category_id)

@@ -41,7 +41,9 @@ p{
   padding: 4px;
   margin-top: 10px;  /* アイテム間の距離を開ける */
 }
-
+a {
+  text-decoration: none;
+}
 .task-item:last-child {
   border-bottom: none;
 }

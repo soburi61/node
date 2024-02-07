@@ -139,6 +139,7 @@ app.post('/login', async (req, res) => {
 });
 
 app.use((req, res, next) => {
+  //req.session.user_id="test";//デバック
   if (req.session.user_id) {
     next();
   } else {
@@ -164,13 +165,17 @@ app.post('/addSubject', async (req, res) => {
 
 
 app.post('/addTask', async (req, res) => {
+  console.log("/addTask");
+  console.log(req.body);
+  console.log(req.session);
   const user_id = req.session.user_id;
   let { name, category_id, importance, lightness, deadline, memo } = req.body;
   name = name || '新しいタスク';
   deadline = deadline || null;
+  console.log(`deadline is ${deadline}`);
   category_id = category_id === '0' ? null : category_id;
   let priority = null;
-
+  //console.log(deadline);
   if (importance && lightness && deadline) {
     try {
       const { stdout, stderr } = await exec(`python calc_task_priority.py ${importance} ${lightness} ${deadline}`);
@@ -183,6 +188,7 @@ app.post('/addTask', async (req, res) => {
       console.error('Error calculating priority:', error);
       return res.status(500).send('Error calculating priority');
     }
+    setAllTasksPriority(user_id);//他のタスクの優先度も更新する
   }
 
   const taskData = { user_id, category_id, name, importance, lightness, deadline, memo, priority };
@@ -196,6 +202,41 @@ app.post('/addTask', async (req, res) => {
   }
 });
 
+async function setAllTasksPriority(user_id) {
+  console.log("function setAllTasksPriority");
+
+  try {
+    const [tasks] = await connection.query('SELECT * FROM tasks WHERE user_id = ?', [user_id]);
+
+    for (const task of tasks) {
+      let { id, importance, lightness, deadline } = task;
+      deadline = deadline || null;
+      let priority = null;
+
+      if (importance && lightness && deadline) {
+        try {
+          const { stdout, stderr } = await exec(`python calc_task_priority.py ${importance} ${lightness} ${deadline}`);
+          if (stderr) {
+            console.error(`Error on stderr: ${stderr}`);
+            throw new Error('Script execution error');
+          }
+          priority = parseFloat(stdout);
+        } catch (error) {
+          console.error('Error calculating priority:', error);
+          throw new Error('Error calculating priority');
+        }
+
+        const sql = 'UPDATE tasks SET priority = ? WHERE id = ? AND user_id = ?';
+        await connection.query(sql, [priority, id, user_id]);
+      }
+    }
+
+    return 'All tasks priority updated successfully';
+  } catch (error) {
+    console.error('Error updating tasks priority:', error);
+    throw new Error('Error updating tasks priority');
+  }
+}
 app.post('/setClass', async (req, res) => {
   console.log("/setClass");
   console.log(req.body);
@@ -254,26 +295,50 @@ app.get('/getSubjects', async (req, res) => {
     res.status(500).send('Error retrieving subjects');
   }
 });
-app.post('/updateTask', async (req, res) => {
-  console.log("/updateTask");
+
+app.post('/setTask', async (req, res) => {
+  console.log("/setTask");
   console.log(req.body);
+  console.log(req.session);
   const user_id = req.session.user_id;
-  const { id, category_id, name, status, importance, lightness, deadline, memo } = req.body;
+  const { id, ...fields } = req.body;
+  const updateFields = Object.entries(fields).reduce((acc, [key, value]) => {
+    if (value !== undefined && value !== '') acc[key] = value;//undefinedを除外して返す
+    return acc;
+  }, {});
+  if (updateFields.category_id) {
+    updateFields.category_id = updateFields.category_id === '0' ? null : updateFields.category_id;
+  }
+  const updateValues = Object.values(updateFields);
+  const updateParams = updateValues.concat(id, user_id);
+  const updateSet = Object.keys(updateFields).map(field => `${field} = ?`).join(', ');
+  const sql = `UPDATE tasks SET ${updateSet} WHERE id = ? AND user_id = ?`;
+  //console.log(sql);
+  //console.log(updateParams);
   try {
-    const sql = 'UPDATE tasks SET category_id = ?, name = ?, status = ?, importance = ?, lightness = ?, deadline = ?, memo = ? WHERE id = ? AND user_id = ?';
-    await connection.query(sql, [category_id, name, status, importance, lightness, deadline, memo, id, user_id]);
-    res.json({ success: true, message: 'Task updated successfully' });
+    await connection.query(sql, updateParams);
+    if(updateFields.importance&&updateFields.lightness&&updateFields.deadline){
+      setAllTasksPriority(user_id);
+    }
+    
+    res.redirect("/tasks");
   } catch (err) {
     console.error('Error updating task:', err);
     res.status(500).send('Error updating task');
   }
 });
 
-app.get('/getTask', async (req, res) => {
+app.get('/taskDetail', async (req, res) => {
+  console.log('/taskDetail');
+  console.log(req.query);
+  console.log(req.session);
   const task_id = req.query.task_id;
   try {
     const [task] = await connection.query('SELECT * FROM tasks WHERE id = ?', [task_id]);
-    res.json(task);
+    if (task.length === 0) {
+      return res.status(404).send('Task not found');
+    }
+    res.render('task-detail.ejs', { task:task[0] });
   } catch (err) {
     console.error('Error retrieving task:', err);
     res.status(500).send('Error retrieving task');
@@ -287,7 +352,7 @@ app.get('/getTasks', async (req, res) => {
   const user_id = req.session.user_id;
   const sort = req.query.sort;
   const category_id = parseInt(req.query.category, 10);
-  console.log(category_id);
+  //console.log(category_id);
   try {
     let query = `SELECT * FROM tasks WHERE user_id = ? AND status = 'active' `;
     let queryParams = [user_id]; // パラメータの配列を初期化
@@ -300,8 +365,8 @@ app.get('/getTasks', async (req, res) => {
   
     query += `ORDER BY ${connection.escapeId(sort)}`; // ソート列をエスケープ
     const [tasks] = await connection.query(query, queryParams); // クエリ実行
-    console.log(`query:${query}`);
-    console.log(tasks);
+    //console.log(`query:${query}`);
+    //console.log(tasks);
     res.json(tasks);
   } catch (err) {
     console.error('Error retrieving tasks:', err);
@@ -473,8 +538,8 @@ app.get('/newSubject', (req, res) => {
 //app.listen(3000,'10.133.90.88');
 
 // wifi
-//console.log('10.150.19.104:3000/');
-//app.listen(3000,'10.150.19.104');
+console.log('10.150.19.86:3000/');
+app.listen(3000,'10.150.19.86');
 
 // main pc
 //console.log('192.168.0.145:3000/');

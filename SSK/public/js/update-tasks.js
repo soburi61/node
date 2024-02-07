@@ -17,18 +17,20 @@ function updateTasks(boxId, sort, category) {
     type: 'GET',
     success: function(tasks) {
       let taskList = tasks.map(task => {
-        let displayValue = '未設定';
-        if (task[sort] !== null) {
-          displayValue = sort === 'deadline' ? new Date(task[sort]).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }) : Math.round(task[sort]);
+        let displayValue = 'None';
+        if (sort === 'deadline'&&task[sort]) {
+          displayValue = task[sort];
+        }else if (task[sort]) {
+          displayValue = Math.round(task[sort]);
         }
         return `
-        <div class="task-item" task-id="${task.id}">
+        <a href="/taskDetail?task_id=${task.id}" class="task-item" task-id="${task.id}">
           <div class="left-contents">
-            <input type="checkbox" class="task-checkbox" data-task-id="${task.id}">
+            <input type="checkbox" class="task-checkbox">
             <span>${task.name}</span>
           </div>
             <span> ${displayValue}</span>
-        </div>`;
+        </a>`;
       }).join('');
       taskList+=`
       <a href="/newTask" class="btn">
@@ -49,9 +51,9 @@ $('.sort, .categories').on('change', function() {
 });
 // チェックボックスがクリックされたときのイベントハンドラを追加
 $(document).on('change', '.task-checkbox', function() {
-  const taskId = $(this).closest('.task-item').data('task-id');
+  const taskId = $(this).closest('.task-item').attr('task-id');
   $.ajax({
-    url: `/updateTasks`,
+    url: `/setTask`,
     type: 'POST',
     data: { id: taskId, status: 'inactive' },
     success: function(response) {

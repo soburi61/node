@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <%- include('head.ejs') %>
+    <link rel="stylesheet" href="/css/new-task.css">
+</head>
+<body>
+    <%- include('header.ejs') %>
+    <main>
+        <div class="container">
+            <form action="/setTask" method="post">
+                <input type="hidden" name="id" value="<%= task.id %>">
+                <input type="text" name="name" value="<%= task.name %>">
+                <label for="category">カテゴリ:</label>
+                <div class="category-container">
+                    <select class="categories" name="category_id">
+                        <!-- カテゴリの選択肢を動的に生成する -->
+                    </select>
+                    <div>
+                        <input type="text" id="newCategory" placeholder="新しいカテゴリ名">
+                        <button type="button" id="addCategoryBtn" class="btn">追加</button>
+                    </div>
+                </div>
+                <div class="box">
+                    <label for="importance">重要度:</label>
+                    <input type="range" id="importance" name="importance" min="0" max="10" value="<%= task.importance %>">
+                    <label for="lightness">軽さ:</label>
+                    <input type="range" id="lightness" name="lightness" min="0" max="10" value="<%= task.lightness %>">
+                    <div class="deadline-container">
+                        <label for="deadline">期限:</label>
+                        <input type="date" name="deadline" value="<%= task.deadline %>">
+                    </div>
+                    <span>上記3つのパラメータを設定すると、ファジィ推論によって自動的に優先度が設定されます。</span>
+                </div>
+                <textarea id="memo" name="memo" placeholder="自由記述欄"><%= task.memo %></textarea>
+                <div style="text-align: right;">
+                    <button type="submit" class="btn">タスク更新</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <script>
+        var currentCategoryId = '<%= task.category_id %>';
+      </script>
+    <script src="/js/add-category.js"></script>
+</body>
+</html>

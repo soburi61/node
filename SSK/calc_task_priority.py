@@ -54,7 +54,8 @@ def calc_task_priority(importance_value, lightness_value, deadline_date):
     priority_eval.input['lightness'] = lightness_value
     # 締切日を日付または時間形式から数値に変換し、適切な値を設定します
     current_date = datetime.datetime.now()  # 現在の日付を取得
-    days_until_deadline = (deadline_date - current_date).days
+    days_until_deadline = (deadline_date - current_date ).days
+    days_until_deadline +=5
     # 2ヶ月以内の場合はスケーリング
     if days_until_deadline >= 60:
         days_until_deadline = 60  # 2ヶ月以上は60に設定

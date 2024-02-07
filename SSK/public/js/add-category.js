@@ -1,3 +1,7 @@
+if (typeof currentCategoryId === 'undefined') {
+  var currentCategoryId = '0'; // ここにデフォルトの値を設定
+}
+
 $(document).ready(function() {
   fetchUpdatedCategories();
 });
@@ -31,10 +35,17 @@ $('#addCategoryBtn').click(function() {
       
       categorySelect.empty().append($(`<option value="0"> ALL </option>`));
       $.each(categories, function(index, category) {
-        categorySelect.append($('<option>', {
+        const option = $('<option>', {
           value: category.category_id,
           text: category.category_name
-        })); // 新しいオプションを追加
+        }); // 新しいオプションを追加
+  
+        // カテゴリが現在のタスクのカテゴリと一致する場合、そのオプションを選択状態にする
+        if (category.category_id == currentCategoryId) {
+          option.prop('selected', true);
+        }
+  
+        categorySelect.append(option);
       });
     })
     .fail(function(error) {

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.1.0, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- Host: localhost    Database: ssk
 -- ------------------------------------------------------
--- Server version	8.1.0
+-- Server version	8.0.34
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -29,7 +29,7 @@ CREATE TABLE `categories` (
   PRIMARY KEY (`category_id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `categories_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,6 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'test','life');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -72,7 +71,7 @@ CREATE TABLE `subjects` (
 
 LOCK TABLES `subjects` WRITE;
 /*!40000 ALTER TABLE `subjects` DISABLE KEYS */;
-INSERT INTO `subjects` VALUES (1,'test','日本文学概論','選択/一般',NULL,1,0,0,'',1),(2,'test','英語V','選択/一般',NULL,1,0,0,'',1),(3,'test','技術者と法','選択/一般',NULL,1,0,0,'',1),(4,'test','国際言語文化論（韓国語）','選択/一般',NULL,1,0,0,'',1),(5,'test','国際言語文化論（独語）','選択/一般',NULL,1,0,0,'',1),(6,'test','応用数学II','必修/専門',NULL,2,0,0,'',1),(7,'test','国際社会と経済','選択/一般',NULL,1,0,0,'',1),(8,'test','システム工学','必修/専門',NULL,1,0,0,'',1),(9,'test','インターンシップ','選択/専門',NULL,1,0,0,'',1),(10,'test','専門科目応用','選択/専門',NULL,1,0,0,'',1),(11,'test','国際言語文化論（中国語）','選択/一般',NULL,1,0,0,'',1),(12,'test','情報数学','必修/専門',NULL,2,0,0,'',1),(13,'test','情報理論','必修/専門',NULL,2,0,0,'',1),(14,'test','情報セキュリティ','必修/専門',NULL,1,0,0,'',1),(15,'test','技術者倫理概論','必修/専門',NULL,2,0,0,'',1),(16,'test','情報工学実験III','必修/専門',NULL,4,0,0,'',1),(17,'test','半導体工学概論','選択/専門',NULL,1,0,0,'',1),(18,'test','卒業研究','必修/専門',NULL,8,0,0,'',1),(19,'test','数理情報工学','選択/専門',NULL,2,0,0,'',1),(20,'test','画像・音処理論','選択/専門',NULL,2,0,0,'',1),(21,'test','ヒューマン情報処理','選択/専門',NULL,2,0,0,'',1),(22,'test','技術英語II','選択/専門',NULL,1,0,0,'',1);
+INSERT INTO `subjects` VALUES (1,'test','日本文学概論','選択/一般',NULL,1,0,0,'',1),(2,'test','国際社会と経済','選択/一般',NULL,1,0,0,'',1),(3,'test','技術者と法','選択/一般',NULL,1,0,0,'',1),(4,'test','英語V','選択/一般',NULL,1,0,0,'',1),(5,'test','国際言語文化論（独語）','選択/一般',NULL,1,0,0,'',1),(6,'test','応用数学II','必修/専門',NULL,2,0,0,'',1),(7,'test','システム工学','必修/専門',NULL,1,0,0,'',1),(8,'test','情報数学','必修/専門',NULL,2,0,0,'',1),(9,'test','情報理論','必修/専門',NULL,2,0,0,'',1),(10,'test','情報セキュリティ','必修/専門',NULL,1,0,0,'',1),(11,'test','技術者倫理概論','必修/専門',NULL,2,0,0,'',1),(12,'test','国際言語文化論（中国語）','選択/一般',NULL,1,0,0,'',1),(13,'test','半導体工学概論','選択/専門',NULL,1,0,0,'',1),(14,'test','インターンシップ','選択/専門',NULL,1,0,0,'',1),(15,'test','国際言語文化論（韓国語）','選択/一般',NULL,1,0,0,'',1),(16,'test','情報工学実験III','必修/専門',NULL,4,0,0,'',1),(17,'test','卒業研究','必修/専門',NULL,8,0,0,'',1),(18,'test','専門科目応用','選択/専門',NULL,1,0,0,'',1),(19,'test','数理情報工学','選択/専門',NULL,2,0,0,'',1),(20,'test','画像・音処理論','選択/専門',NULL,2,0,0,'',1),(21,'test','ヒューマン情報処理','選択/専門',NULL,2,0,0,'',1),(22,'test','技術英語II','選択/専門',NULL,1,0,0,'',1);
 /*!40000 ALTER TABLE `subjects` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,15 +90,15 @@ CREATE TABLE `tasks` (
   `status` varchar(255) DEFAULT 'active',
   `importance` int DEFAULT NULL,
   `lightness` int DEFAULT NULL,
-  `deadline` timestamp NULL DEFAULT NULL,
-  `memo` varchar(255) DEFAULT '',
+  `deadline` varchar(10) DEFAULT NULL,
+  `memo` varchar(1024) DEFAULT '',
   `priority` float DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `category_id` (`category_id`),
   CONSTRAINT `tasks_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`category_id`) REFERENCES `categories` (`category_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -108,7 +107,6 @@ CREATE TABLE `tasks` (
 
 LOCK TABLES `tasks` WRITE;
 /*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
-INSERT INTO `tasks` VALUES (1,'test',1,'life','active',6,5,'2024-02-07 15:00:00','',58.0508);
 /*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,7 +169,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES ('test','test@gmail.com','$2b$10$rEVS/1pGIwVtN2CWN7qNc.DT00zQR/Wjyo.uwH5OikTPAvMyJY3wO','熊本高等専門学校',5,'人間情報システム工学科','https://syllabus.kosen-k.go.jp/Pages/PublicSubjects?school_id=47&department_id=14&year=2023&lang=ja','2024-02-05 12:53:00','2024-02-05 12:53:00',1,NULL);
+INSERT INTO `users` VALUES ('test','test@gmail.com','$2b$10$w9PtayEucp3lv2NCl98.0euRZmRB0Hm2/KB/mFMWYn1/ss8JHR4si','熊本高等専門学校',5,'人間情報システム工学科','https://syllabus.kosen-k.go.jp/Pages/PublicSubjects?school_id=47&department_id=14&year=2023&lang=ja','2024-02-07 08:39:33','2024-02-07 08:39:33',1,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -184,4 +182,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-02-05 21:59:44
+-- Dump completed on 2024-02-07 17:40:50
