@@ -63,15 +63,15 @@ def get_subjects(kosen, department, grade):
         #print(subject.prettify())
         subject_name = ""
         subject_type = ""
-        credit = 0
-        teachers = []
+        credits = 0
+        credit_type=""
         span_element = subject.find("span", class_="mcc-hide")
         if span_element:
             subject_name = span_element.text.strip()
         else:
             continue
 
-        teacher = subject.find("td", width="122").text.strip()
+        teachers = subject.find("td", width="122").text.strip()
 
         grade_class = "c" + str(grade) + "m"
         grade_elements = subject.find_all("td", class_=grade_class)
@@ -90,17 +90,19 @@ def get_subjects(kosen, department, grade):
         # 履修単位または学修単位と書かれているtd要素を探す
         credit_td = subject.find("td", string=re.compile(r'履修単位|学修単位'))
         if credit_td:
+            credit_type = credit_td.text.strip()
             # 見つかったtd要素の次の兄弟要素を取得
             credit_td = credit_td.find_next_sibling("td")
             if credit_td:
-                credit = credit_td.text.strip()
+                credits = credit_td.text.strip()
 
         
         subject_info = {
             "subject_name": subject_name,
             "subject_type": subject_type,
-            "teacher": teacher,
-            "credit": credit
+            "teachers": teachers,
+            "credits": credits,
+            "credit_type": credit_type
         }
         subjects_info.append(subject_info)
 

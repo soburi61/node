@@ -33,7 +33,7 @@ $('#addCategoryBtn').click(function() {
       const categories = response.categories; // カテゴリ配列を取得
       const categorySelect = $('.categories');
       
-      categorySelect.empty().append($(`<option value="0"> ALL </option>`));
+      categorySelect.empty().append($(`<option value="0"> None </option>`));
       $.each(categories, function(index, category) {
         const option = $('<option>', {
           value: category.category_id,

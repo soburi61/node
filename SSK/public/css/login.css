@@ -10,11 +10,13 @@ body {
 
 main {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     width: 100%;
+    flex-direction: column;
 }
 .container {
+    width:25vw;
     margin:50px 0;
     background: white;
     padding: 20px;
@@ -48,4 +50,8 @@ button {
 }
 button:hover {
   background-color: #0056b3;
+}
+.note{
+  font-size:0.8rem;
+  color:red;
 }

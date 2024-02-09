@@ -1,11 +1,16 @@
 <% function getSubjectDetail(subject) {
   if (subject) {
-      return `${subject.subject_name}
-          <span class="detail">${subject.subject_type} ${subject.credit}単位
-              <button class='btn increase-absences' data-subject-id="${subject.subject_id}">欠課:${subject.absences} </button> <button class='btn increase-tardies' data-subject-id="${subject.subject_id}">遅刻:${subject.tardies} </button></span>
-              <button class='edit-subject-btn btn'><i class="fa-solid fa-pen-to-square"></i></button>`;
+    return `<div class=class-container><a class="remove-class-btn btn"><i class="fa-solid fa-xmark"></i></a>
+      <p class="subject-name">${subject.subject_name}</p>
+      <span class="detail">${subject.subject_type} ${subject.credits}単位</span>
+      <div class="flex">
+      <button class='btn increase-absences' data-subject-id="${subject.subject_id}">欠課:${subject.absences} </button>
+      <button class='btn increase-tardies' data-subject-id="${subject.subject_id}">遅刻:${subject.tardies} </button>
+      </div>
+            
+            <a href="/getSubjectDetail?subject_id=${subject.subject_id}" class='edit-subject-btn btn'><i class="fa-solid fa-pen-to-square"></i></a></div>`;
   }
-  return `<button class='add-class-btn btn'><i class="fa-solid fa-plus"></i></button>`;
+  return `<div class=class-container></div><button class='add-class-btn btn'><i class="fa-solid fa-plus"></i></button></div>`;
 } %>
 
 <!DOCTYPE html>
@@ -38,20 +43,20 @@
           <% for (let i = 0; i < 4; i++) { %>
           <tr>
             <td ><%= i+1 %></td>
-            <td data-day="mon" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(monSubjects[i]) %></td>
-            <td data-day="tue" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(tueSubjects[i]) %></td>
-            <td data-day="wed" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(wedSubjects[i]) %></td>
-            <td data-day="thu" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(thuSubjects[i]) %></td>
-            <td data-day="fri" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(friSubjects[i]) %></td>
+            <td data-week="mon" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(monSubjects[i]) %></td>
+            <td data-week="tue" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(tueSubjects[i]) %></td>
+            <td data-week="wed" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(wedSubjects[i]) %></td>
+            <td data-week="thu" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(thuSubjects[i]) %></td>
+            <td data-week="fri" data-time="<%= i+1 %>" class="subject"><%- getSubjectDetail(friSubjects[i]) %></td>
           </tr>
           <% } %>
       </table>
     </main>
   
-    
+  <script src="/js/common-scripts.js"></script>
+  <script src="/js/add-class.js"></script>
+  <script src="/js/increase.js"></script>
     
 </body>
-<%- include('common-scripts.ejs') %>
-<script src="/js/add-class.js"></script>
-<script src="/js/increase-absences.js"></script>
+
 </html>

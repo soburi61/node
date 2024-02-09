@@ -1,0 +1,55 @@
+<% function getSubjectDetail(subject) {
+    if (subject) {
+      return `<div class=class-container><a class="remove-class-btn btn"><i class="fa-solid fa-xmark"></i></a>
+        <p class="subject-name">${subject.subject_name}</p>
+        <span class="detail">${subject.subject_type} ${subject.credits}単位</span>
+        <div class="flex">
+        <button class='btn increase-absences' data-subject-id="${subject.subject_id}">欠課:${subject.absences} </button>
+        <button class='btn increase-tardies' data-subject-id="${subject.subject_id}">遅刻:${subject.tardies} </button>
+        </div>
+              
+              <a href="/getSubjectDetail?subject_id=${subject.subject_id}" class='edit-subject-btn btn'><i class="fa-solid fa-pen-to-square"></i></a></div>`;
+    }
+    return `<div class=class-container></div><button class='add-class-btn btn'><i class="fa-solid fa-plus"></i></button></div>`;
+  } %>
+  <!DOCTYPE html>
+  <html lang="ja">
+  <head>
+      <%- include('head.ejs') %>
+      <link href="/css/top.css" rel="stylesheet">
+  </head>
+  <body>
+      <%- include('header.ejs') %>
+      <aside id="sidebar">
+        <div id="search-bar">
+          <input type="text" placeholder="科目検索...">
+        </div>
+        <ul>
+          <li><a class="add-subject-btn">新しい科目</a></li>
+          <!-- ここに必要な要素を追加 -->
+        </ul>
+      </aside>
+      <main>
+
+      <div class="row">
+        <% subjects.forEach(function(subject, index) { %>
+          <div class="col-md-2">
+            <div class="box">
+              <%- getSubjectDetail(subject) %>
+            </div>
+          </div>
+          <% if ((index + 1) % 6 === 0) { %>
+            </div><div class="row">
+          <% } %>
+        <% }); %>
+      </div>
+    </main>
+  
+    <script src="/js/common-scripts.js"></script>
+    <script src="/js/add-class.js"></script>
+    <script src="/js/increase.js"></script>
+      
+  </body>
+  
+  </html>
+  

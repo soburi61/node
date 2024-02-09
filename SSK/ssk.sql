@@ -18,8 +18,9 @@ CREATE TABLE subjects (
   user_id VARCHAR(150) NOT NULL,  -- ユーザーID
   subject_name VARCHAR(255),  -- 科目名
   subject_type VARCHAR(255),  -- 科目の種類
-  teacher VARCHAR(255), -- 教員の名前 複数の場合はコンマ区切り
-  credit INT,  -- 単位数
+  teachers VARCHAR(255), -- 教員の名前 複数の場合はコンマ区切り
+  credits INT,  -- 単位数
+  credit_type VARCHAR(12), -- 履修単位か学修単位
   absences INT DEFAULT 0,  -- 欠席数
   tardies INT DEFAULT 0,  -- 遅刻数
   memo VARCHAR(255) DEFAULT "",  -- メモ
@@ -52,12 +53,12 @@ CREATE TABLE tasks (
   user_id VARCHAR(150) NOT NULL,
   category_id INT,
   name VARCHAR(255),
-  status VARCHAR(255) DEFAULT "active", 
   importance INT,
   lightness INT,
   deadline VARCHAR(10), -- 2024-02-07
   memo VARCHAR(1024) DEFAULT "",
   priority FLOAT,
+  isActive BOOLEAN NOT NULL DEFAULT TRUE, -- 有効かどうか(無効だと科目リストに追加できない)
   FOREIGN KEY (user_id) REFERENCES users(user_id),
   FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );

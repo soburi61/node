@@ -42,9 +42,16 @@ input[type="date"] {
   width: auto; /* 幅を自動にする */
 }
 
-span {
+.note {
   display:flex;
   justify-content: flex-end;
   color: rgb(118, 118, 118);
   font-size: 0.6em;
+}
+.min{
+  width: 3em;
+  max-width:100%;
+}
+.mid{
+  width:5em;
 }

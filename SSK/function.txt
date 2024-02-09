@@ -1,5 +1,8 @@
 mysqldump -u root -p ssk > backup.sql
 mysql -u root -p ssk < backup.sql
 
+ngrok http 3000
+
+
 todo
 科目の並び替え,表示

@@ -1,5 +1,6 @@
 *{
   box-sizing: border-box;
+  font-weight: bold;
 }
 html, body {
   font-size: 20px;
@@ -23,7 +24,7 @@ header {
   display:flex;
   align-items:center;
   justify-content:flex-start;
-
+  z-index: 1000;
 }
 main {
   min-height: 90vh;
@@ -43,9 +44,9 @@ footer {
 }
 .logo a{
     display:block;
-    margin-left:0px;
+    margin-left:2vw;
     margin-right: auto;
-    font-size: 24px;
+    font-size: 2em;
     font-weight: bold;
     color: #fff;
     text-decoration: none;
@@ -115,7 +116,24 @@ nav{
 .detail {
   font-size: 0.7em;
 }
-
+label{
+  font-weight: normal;
+}
+span{
+  font-weight: normal;
+}
+textarea{
+  font-weight:normal;
+}
+option{
+  font-weight:normal;
+}
+input{
+  font-weight: normal;
+}
+select{
+  font-weight:normal;
+}
 input[type="range"] {
   width: 60%;
   margin-top: 10px;
@@ -123,7 +141,7 @@ input[type="range"] {
 .btn{
   border: 1px solid #000; /* 枠線を付ける */
   background-color: transparent; /* 背景を透明にする */
-  font-size: 1em; /* 文字の大きさを小さめに設定 */
+  font-size: 1rem; /* 文字の大きさを小さめに設定 */
   padding: 5px 10px; /* ボタンのパディングを調整して小さくする */
   writing-mode: horizontal-tb;
   width:auto;
@@ -137,4 +155,7 @@ input[type="range"] {
   margin: 1vh 0vw;
   border: 1px solid rgb(118, 118, 118); /* 薄い黒のボーダー */
   border-radius: 5px; /* 角を少し丸める */
+  position: relative;
+  display: flex;
+    flex-direction: column;
 }

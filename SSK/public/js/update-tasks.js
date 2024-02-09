@@ -55,7 +55,7 @@ $(document).on('change', '.task-checkbox', function() {
   $.ajax({
     url: `/setTask`,
     type: 'POST',
-    data: { id: taskId, status: 'inactive' },
+    data: { id: taskId, isActive: '0' },
     success: function(response) {
       updateAllTasks();
       console.log(response);

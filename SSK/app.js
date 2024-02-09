@@ -100,6 +100,13 @@ app.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(password, saltRounds);
     let sql = 'INSERT INTO users (user_id, email, password, kosen, grade, department, syllabus_url) VALUES (?, ?, ?, ?, ?, ?, ?)';
     await connection.query(sql, [user_id, email, hash, kosen, grade, department, syllabus_url]);
+    const importResult = await importSubjects(user_id, kosen, department, grade);
+    if (importResult) {
+      console.log('Subjects imported successfully');
+    } else {
+      console.error('Error importing subjects');
+    }
+
     res.redirect('/');
   } catch (error) {
     console.error('error:', error);
@@ -262,6 +269,25 @@ async function getSubjectsByDay(timetableData, dayOfWeek) {
   return subjects;
 }
 
+app.get('/getSubjectDetail', async (req, res) => {
+  console.log('/getSubjectDetail');
+  console.log(req.query);
+  console.log(req.session);
+  const user_id = req.session.user_id;
+  const subject_id = req.query.subject_id;
+  try {
+    const [results] = await connection.query('SELECT * FROM subjects WHERE user_id = ? AND subject_id = ?', [user_id, subject_id]);
+    if (results.length === 0) {
+      return res.status(404).send('Subject not found');
+    }
+    const subject = results[0];
+    res.render('subject-detail.ejs', { subject });
+  } catch (err) {
+    console.error('Error retrieving subject detail:', err);
+    res.status(500).send('Error retrieving subject detail');
+  }
+});
+
 app.get('/getSyllabusUrl', async (req, res) => {
   console.log("/getSylabusUrl");
   console.log(req.query);
@@ -345,6 +371,20 @@ app.get('/taskDetail', async (req, res) => {
   }
 });
 
+app.get('/getAllSubjects', async (req, res) => {
+  console.log("/getAllSubjects");
+  console.log(req.query);
+  console.log(req.session);
+  const user_id = req.session.user_id;
+  try {
+    const [subjects] = await connection.query('SELECT * FROM subjects WHERE user_id = ?', [user_id]);
+    res.render('all-subjects.ejs', { subjects });
+  } catch (err) {
+    console.error('Error retrieving all subjects:', err);
+    res.status(500).send('Error retrieving all subjects');
+  }
+});
+
 app.get('/getTasks', async (req, res) => {
   console.log("/getTasks");
   console.log(req.query);
@@ -354,7 +394,7 @@ app.get('/getTasks', async (req, res) => {
   const category_id = parseInt(req.query.category, 10);
   //console.log(category_id);
   try {
-    let query = `SELECT * FROM tasks WHERE user_id = ? AND status = 'active' `;
+    let query = `SELECT * FROM tasks WHERE user_id = ? AND isActive = '1' `;
     let queryParams = [user_id]; // パラメータの配列を初期化
   
     // category_idが'0'でない場合はクエリとパラメータを更新
@@ -371,6 +411,20 @@ app.get('/getTasks', async (req, res) => {
   } catch (err) {
     console.error('Error retrieving tasks:', err);
     res.status(500).send('Error retrieving tasks');
+  }
+});
+app.post('/removeClass', async (req, res) => {
+  console.log("/removeClass");
+  console.log(req.body);
+  console.log(req.session);
+  const user_id = req.session.user_id;
+  const { day_of_week, time_slot } = req.body;
+  try {
+    await connection.query('DELETE FROM timetable WHERE user_id = ? AND day_of_week = ? AND time_slot = ?', [user_id, day_of_week, time_slot]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Error removing class:', err);
+    res.status(500).send('Error removing class');
   }
 });
 
@@ -422,34 +476,53 @@ app.get('/increaseTardies', async (req, res) => {
   }
 });
 
-app.get('/importSubjects', async (req, res) => {
-  console.log('/importSubjects');
-  console.log(req.query);
+app.post('/importSubjects', async (req, res) => {
+  console.log("/importSubjects");
+  console.log(req.body);
   console.log(req.session);
   const user_id = req.session.user_id;
+  const {kosen, department, grade } = req.body;
   try {
-    const [results] = await connection.query('SELECT kosen, department, grade FROM users WHERE user_id = ?', [user_id]);
-    if (results.length === 0) {
-      return res.status(404).send('User not found');
+    const success = await importSubjects(user_id, kosen, department, grade);
+    if (success) {
+      res.redirect('/');
+    } else {
+      res.status(500).send('科目のインポートに失敗しました。');
     }
-    const { kosen, department, grade } = results[0];
+  } catch (err) {
+    console.error('科目のインポート中にエラーが発生しました:', err);
+    res.status(500).send('科目のインポート中にエラーが発生しました。');
+  }
+});
+
+async function importSubjects(user_id, kosen, department, grade) {
+  try {
     const { stdout, stderr } = await exec(`python get_subjects.py ${kosen} ${department} ${grade}`);
     if (stderr) {
       throw new Error(`Error on stderr: ${stderr}`);
     }
     const subjects = JSON.parse(stdout);
+    console.log(subjects);
     const insertPromises = subjects.map(subject => {
-      const sql = 'INSERT INTO subjects (user_id, subject_name, subject_type, teacher, credit) VALUES (?, ?, ?, ?, ?)';
-      return connection.query(sql, [user_id, subject.subject_name, subject.subject_type, subject.teachers, subject.credit]);
+      const sql = 'INSERT INTO subjects (user_id, subject_name, subject_type, teachers, credits, credit_type) VALUES (?, ?, ?, ?, ?, ?)';
+      return connection.query(sql, [user_id, subject.subject_name, subject.subject_type, subject.teachers, subject.credits, subject.credit_type]);
     });
     await Promise.all(insertPromises);
-    res.redirect('/');
+    return true;
   } catch (error) {
     console.error('Error:', error);
-    res.status(500).send('Error adding subjects');
+    return false;
   }
+}
+
+app.get('/importSubjectsPage', async (req, res) => {
+  console.log("/importSubjectsPage");
+  console.log(req.query);
+  console.log(req.session);
+  res.render('import-subjects-page.ejs');
 });
 
+console.log('/')
 app.get('/', async (req, res) => {
   console.log('/')
   console.log(req.query);
@@ -500,6 +573,18 @@ app.get('/getCategories',async(req,res) => {
   }
 });
 
+app.post('/setSubject', async (req, res) => {
+  const { id, name, subject_type, credit_type, credits, absences, tardies, teachers, memo } = req.body;
+  try {
+    const sql = 'UPDATE subjects SET subject_name = ?, subject_type = ?, credit_type = ?, credits = ?, absences = ?, tardies = ?, teachers = ?, memo = ? WHERE subject_id = ?';
+    await connection.query(sql, [name, subject_type, credit_type, credits, absences, tardies, teachers, memo, id]);
+    res.redirect('/'); // 更新後にトップページにリダイレクト
+  } catch (error) {
+    console.error('Error updating subject:', error);
+    res.status(500).send('Error updating subject');
+  }
+});
+
 app.get('/newTask', async(req, res) => {
   console.log('/newTask');
   console.log(req.query);
@@ -538,8 +623,8 @@ app.get('/newSubject', (req, res) => {
 //app.listen(3000,'10.133.90.88');
 
 // wifi
-console.log('10.150.19.86:3000/');
-app.listen(3000,'10.150.19.86');
+//console.log('10.150.19.86:3000/');
+//app.listen(3000,'10.150.19.86');
 
 // main pc
 //console.log('192.168.0.145:3000/');

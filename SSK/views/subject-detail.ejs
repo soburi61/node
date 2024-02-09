@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <%- include('head.ejs') %>
+    <link rel="stylesheet" href="/css/detail.css">
+</head>
+<body>
+    <%- include('header.ejs') %>
+    <main>
+        <div class="container">
+            <form action="/setSubject" method="post">
+              <input type="hidden" name="id" value="<%= subject.subject_id %>">
+              <div>  
+                <label for="name">科目名　:</label>
+                <input type="text" name="name" value="<%= subject.subject_name %>">
+              </div>
+              <div>
+                <label for="subject_type">科目区分:</label>
+                <input type="text" id="subject_type" name="subject_type" value="<%= subject.subject_type %>">
+              </div>
+              <div>
+                <input type="text" id="credit_type" name="credit_type" value="<%= subject.credit_type %>" class="mid">
+                <span>:</span>
+                <input type="number" id="credits" name="credits" value="<%= subject.credits %>" class="min">
+              </div>
+              <div>
+                <label for="absences">遅刻:</label>
+                <input type="number" id="absences" name="absences" value="<%= subject.absences %>" class="min">
+              </div>
+              <div>
+                <label for="tardies">欠課:</label>
+                <input type="number" id="tardies" name="tardies" value="<%= subject.tardies %>" class="min">
+              </div>
+              
+              <label for="teachers">担当教員:</label>
+              <input type="text" id="teachers" name="teachers" value="<%= subject.teachers %>">
+
+              <label for="memo">メモ:</label>
+              <textarea id="memo" name="memo"><%= subject.memo %></textarea>
+              <div style="text-align: right;">
+                  <button type="submit" class="btn">科目更新</button>
+              </div>
+            </form>
+        </div>
+    </main>
+    <script src="/js/add-category.js"></script>
+    <script src="/js/common-scripts.js"></script>
+</body>
+</html>

@@ -2,7 +2,7 @@ h1 {
     text-align: center;
 }
 .detail {
-    font-size: 0.6em;
+    font-size:1rem;
 }
 table {
     width: 100%;
@@ -14,7 +14,6 @@ table th, table td {
     border: 1px solid #ccc;
     padding: 0px;
     text-align: center;
-    white-space: pre-line;
     position: relative;
 }
 .subject {
@@ -28,10 +27,8 @@ table th {
     background-color: #f2f2f2;
 }
 
-
-
-.subject-title{
-    font-size: 1.2em;
+.subject-name{
+    font-size: 1.5rem;
     font-weight:bold;
     margin:0 0;
 }
@@ -51,5 +48,27 @@ ul{
     background-color: transparent; /* 背景を透明にする */
     bottom: 0;
     right: 0;
-    margin:5px 5px;
+
+}
+
+.remove-class-btn{
+    position: absolute;
+    border: none;
+    background-color: transparent; /* 背景を透明にする */
+    top: 0;
+    right: 0;
+}
+
+.increase-absences,.increase-tardies{
+    font-size:0.7rem;
+    margin:0 1vw;
+}
+
+.class-container{
+    padding: 0 1vw;
+    text-align: center;
+}
+.flex {
+    display:flex;
+    justify-content: center;
 }
