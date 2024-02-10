@@ -106,7 +106,7 @@ app.post('/register', async (req, res) => {
     } else {
       console.error('Error importing subjects');
     }
-
+    req.session.user_id=user_id
     res.redirect('/');
   } catch (error) {
     console.error('error:', error);
