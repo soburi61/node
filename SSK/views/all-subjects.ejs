@@ -1,6 +1,6 @@
 <% function getSubjectDetail(subject) {
     if (subject) {
-      return `<div class=class-container><a class="remove-class-btn btn"><i class="fa-solid fa-xmark"></i></a>
+      return `<div class="class-container"><a href="/deleteSubject?subject_id=${subject.subject_id}" class="remove-subject-btn btn"><i class="fa-solid fa-xmark"></i></a>
         <p class="subject-name">${subject.subject_name}</p>
         <span class="detail">${subject.subject_type} ${subject.credits}単位</span>
         <div class="flex">

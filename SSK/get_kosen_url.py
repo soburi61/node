@@ -1,10 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-import re
-import json
 import sys
 
-def get_department_page(kosen):
+def get_kosen_url(kosen):
     url = "https://syllabus.kosen-k.go.jp"
     try:
         res = requests.get(url)
@@ -26,4 +24,4 @@ def get_department_page(kosen):
 
 if __name__ == "__main__":
     kosen = sys.argv[1]
-    print(get_department_page(kosen))
+    print(get_kosen_url(kosen))

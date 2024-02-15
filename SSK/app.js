@@ -170,6 +170,20 @@ app.post('/addSubject', async (req, res) => {
 });
 
 
+app.get('/deleteSubject', async (req, res) => {
+  console.log("/addSubject");
+  console.log(req.body);
+  console.log(req.session);
+  const subject_id = req.query.subject_id;
+  try {
+    const sql = 'DELETE FROM subjects WHERE subject_id = ?';
+    await connection.query(sql, [subject_id]);
+    res.redirect('/getAllSubjects');
+  } catch (err) {
+    console.error('Error deleting subject:', err);
+    res.status(500).send('Error deleting subject');
+  }
+});
 
 app.post('/addTask', async (req, res) => {
   console.log("/addTask");

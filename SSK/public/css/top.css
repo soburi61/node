@@ -51,7 +51,7 @@ ul{
 
 }
 
-.remove-class-btn{
+.remove-class-btn,.remove-subject-btn{
     position: absolute;
     border: none;
     background-color: transparent; /* 背景を透明にする */

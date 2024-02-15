@@ -51,6 +51,9 @@ footer {
     color: #fff;
     text-decoration: none;
 }
+a{
+  color:black;
+}
 nav{
     margin-left: auto;
 }

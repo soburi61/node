@@ -3,12 +3,12 @@ from bs4 import BeautifulSoup
 import re
 import json
 import sys 
-from get_department_page import get_department_page
+from get_kosen_url import get_kosen_url
 
 #subjectsのjson形式のデータを返す
 def get_subjects(kosen, department, grade):
     url = "https://syllabus.kosen-k.go.jp"
-    kosen_url=get_department_page(kosen)
+    kosen_url=get_kosen_url(kosen)
     # HTMLを取得
     try:
         res = requests.get(kosen_url)

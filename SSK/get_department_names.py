@@ -1,13 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
-import re
 import json
 import sys
-from get_department_page import get_department_page 
+from get_kosen_url import get_kosen_url 
 
 #学科の名前一覧を返す
 def get_department_names(kosen):
-    kosen_url=get_department_page(kosen)
+    kosen_url=get_kosen_url(kosen)
     # HTMLを取得
     try:
         res = requests.get(kosen_url)
