@@ -46,7 +46,7 @@ CREATE TABLE tasks (
   category_id INT, -- カテゴリーID
   name VARCHAR(255), -- タスク名
   importance INT, -- 重要度
-  lightness INT, -- 軽さ
+  effort INT, -- 労力
   deadline VARCHAR(10), -- 締め切り日 YYYY-MM-DD
   memo VARCHAR(1024) DEFAULT "", -- メモ
   priority FLOAT, -- 優先度

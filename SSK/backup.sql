@@ -89,7 +89,7 @@ CREATE TABLE `tasks` (
   `category_id` int DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
   `importance` int DEFAULT NULL,
-  `lightness` int DEFAULT NULL,
+  `effort` int DEFAULT NULL,
   `deadline` varchar(10) DEFAULT NULL,
   `memo` varchar(1024) DEFAULT '',
   `priority` float DEFAULT NULL,

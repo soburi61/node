@@ -6,9 +6,9 @@ import datetime
 import sys
 import json
 #--定義--
-# 重要度、締切日（日付）、タスクの軽さを入力変数とします
+# 重要度、締切日（日付）、タスクの労力を入力変数とします
 importance = ctrl.Antecedent(np.arange(0, 11, 1), 'importance')
-lightness = ctrl.Antecedent(np.arange(0, 11, 1), 'lightness')
+effort = ctrl.Antecedent(np.arange(0, 11, 1), 'effort')
 deadline = ctrl.Antecedent(np.arange(0, 61, 1), 'deadline')
 
 
@@ -20,9 +20,9 @@ importance['low'] = fuzz.trimf(importance.universe, [0, 0, 5])
 importance['medium'] = fuzz.trimf(importance.universe, [0, 5, 10])
 importance['high'] = fuzz.trimf(importance.universe, [5, 10, 10])
 
-lightness['light'] = fuzz.trimf(lightness.universe, [0, 0, 5])
-lightness['medium'] = fuzz.trimf(lightness.universe, [0, 5, 10])
-lightness['heavy'] = fuzz.trimf(lightness.universe, [5, 10, 10])
+effort['light'] = fuzz.trimf(effort.universe, [0, 0, 5])
+effort['medium'] = fuzz.trimf(effort.universe, [0, 5, 10])
+effort['heavy'] = fuzz.trimf(effort.universe, [5, 10, 10])
 
 deadline['near'] = fuzz.trimf(deadline.universe, [0, 0, 15])
 deadline['medium'] = fuzz.trimf(deadline.universe, [10, 30, 50])
@@ -33,17 +33,17 @@ priority['medium'] = fuzz.trimf(priority.universe, [0, 50, 100])
 priority['high'] = fuzz.trimf(priority.universe, [50, 100, 100])
 
 # ルールを定義
-rule1 = ctrl.Rule(importance['low'] | deadline['far'] | lightness['light'], priority['low'])
-rule2 = ctrl.Rule(importance['medium'] | deadline['medium'] | lightness['medium'], priority['medium'])
-rule3 = ctrl.Rule(importance['high'] | deadline['near'] | lightness['heavy'], priority['high'])
-# rule4 = ctrl.Rule(deadline['near'] & lightness['heavy'], priority['high'])
+rule1 = ctrl.Rule(importance['low'] | deadline['far'] | effort['light'], priority['low'])
+rule2 = ctrl.Rule(importance['medium'] | deadline['medium'] | effort['medium'], priority['medium'])
+rule3 = ctrl.Rule(importance['high'] | deadline['near'] | effort['heavy'], priority['high'])
+# rule4 = ctrl.Rule(deadline['near'] & effort['heavy'], priority['high'])
 # ルールを制御システムに追加
 priority_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
 #------
 
 
 
-def calc_task_priority(importance_value, lightness_value, deadline_date):
+def calc_task_priority(importance_value, effort_value, deadline_date):
 
 
     # 制御システムをシミュレーションに接続します
@@ -51,7 +51,7 @@ def calc_task_priority(importance_value, lightness_value, deadline_date):
 
     # 具体的な入力値を設定します
     priority_eval.input['importance'] = importance_value
-    priority_eval.input['lightness'] = lightness_value
+    priority_eval.input['effort'] = effort_value
     # 締切日を日付または時間形式から数値に変換し、適切な値を設定します
     current_date = datetime.datetime.now()  # 現在の日付を取得
     days_until_deadline = (deadline_date - current_date ).days
@@ -80,9 +80,9 @@ if __name__ == "__main__":
         print( datetime.datetime.now())
         sys.exit(1)
     importance_value = int(args[0])
-    lightness_value = int(args[1])
+    effort_value = int(args[1])
     deadline_date = datetime.datetime.strptime(args[2], "%Y-%m-%d")  # 文字列をdatetime.datetime型に変換
-    priority = calc_task_priority(importance_value, lightness_value, deadline_date)
+    priority = calc_task_priority(importance_value, effort_value, deadline_date)
     print(json.dumps(priority))
     
 

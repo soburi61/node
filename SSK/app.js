@@ -190,16 +190,16 @@ app.post('/addTask', async (req, res) => {
   console.log(req.body);
   console.log(req.session);
   const user_id = req.session.user_id;
-  let { name, category_id, importance, lightness, deadline, memo } = req.body;
+  let { name, category_id, importance, effort, deadline, memo } = req.body;
   name = name || '新しいタスク';
   deadline = deadline || null;
   console.log(`deadline is ${deadline}`);
   category_id = category_id === '0' ? null : category_id;
   let priority = null;
   //console.log(deadline);
-  if (importance && lightness && deadline) {
+  if (importance && effort && deadline) {
     try {
-      const { stdout, stderr } = await exec(`python calc_task_priority.py ${importance} ${lightness} ${deadline}`);
+      const { stdout, stderr } = await exec(`python calc_task_priority.py ${importance} ${effort} ${deadline}`);
       if (stderr) {
         console.error(`Error on stderr: ${stderr}`);
         return res.status(500).send('Script execution error');
@@ -212,7 +212,7 @@ app.post('/addTask', async (req, res) => {
     setAllTasksPriority(user_id);//他のタスクの優先度も更新する
   }
 
-  const taskData = { user_id, category_id, name, importance, lightness, deadline, memo, priority };
+  const taskData = { user_id, category_id, name, importance, effort, deadline, memo, priority };
   try {
     const sql = 'INSERT INTO tasks SET ?';
     await connection.query(sql, taskData);
@@ -230,13 +230,13 @@ async function setAllTasksPriority(user_id) {
     const [tasks] = await connection.query('SELECT * FROM tasks WHERE user_id = ?', [user_id]);
 
     for (const task of tasks) {
-      let { id, importance, lightness, deadline } = task;
+      let { id, importance, effort, deadline } = task;
       deadline = deadline || null;
       let priority = null;
 
-      if (importance && lightness && deadline) {
+      if (importance && effort && deadline) {
         try {
-          const { stdout, stderr } = await exec(`python calc_task_priority.py ${importance} ${lightness} ${deadline}`);
+          const { stdout, stderr } = await exec(`python calc_task_priority.py ${importance} ${effort} ${deadline}`);
           if (stderr) {
             console.error(`Error on stderr: ${stderr}`);
             throw new Error('Script execution error');
@@ -357,7 +357,7 @@ app.post('/setTask', async (req, res) => {
   //console.log(updateParams);
   try {
     await connection.query(sql, updateParams);
-    if(updateFields.importance&&updateFields.lightness&&updateFields.deadline){
+    if(updateFields.importance&&updateFields.effort&&updateFields.deadline){
       setAllTasksPriority(user_id);
     }
     
@@ -417,7 +417,12 @@ app.get('/getTasks', async (req, res) => {
       queryParams.push(category_id); // category_idをパラメータに追加
     }
   
-    query += `ORDER BY ${connection.escapeId(sort)}`; // ソート列をエスケープ
+    query += `ORDER BY ? IS NULL ASC, ?`; // ソート列をエスケープ
+    if(sort!=="deadline"){
+      query += ' DESC';
+    }
+    queryParams.push(sort);
+    queryParams.push(sort);
     const [tasks] = await connection.query(query, queryParams); // クエリ実行
     //console.log(`query:${query}`);
     //console.log(tasks);
@@ -641,9 +646,9 @@ app.get('/newSubject', (req, res) => {
 //app.listen(3000,'10.150.19.86');
 
 // main pc
-//console.log('192.168.0.145:3000/');
-//app.listen(3000, '0.0.0.0');
+//console.log('10.133.90.238:3000/');
+app.listen(3000, '0.0.0.0');
 
 // localhost
-console.log('localhost:3000/');
-app.listen(3000);
+//console.log('localhost:3000/');
+//app.listen(3000);
