@@ -407,29 +407,29 @@ app.get('/getTasks', async (req, res) => {
   const sort = req.query.sort;
   const category_id = parseInt(req.query.category, 10);
   //console.log(category_id);
+
   try {
     let query = `SELECT * FROM tasks WHERE user_id = ? AND isActive = '1' `;
     let queryParams = [user_id]; // パラメータの配列を初期化
-  
+
     // category_idが'0'でない場合はクエリとパラメータを更新
     if (category_id !== 0) {
       query += `AND category_id = ? `;
       queryParams.push(category_id); // category_idをパラメータに追加
     }
-  
-    query += `ORDER BY ? IS NULL ASC, ?`; // ソート列をエスケープ
-    if(sort!=="deadline"){
-      query += ' DESC';
-    }
-    queryParams.push(sort);
-    queryParams.push(sort);
+
+    // ソート列を動的に生成
+    const sortColumn = sort === 'deadline' ? 'deadline' : `${sort} IS NULL, ${sort}`;
+
+    query += `ORDER BY ${sortColumn} DESC`;
+    console.log(`query:${query}`);
+    console.log(`queryParams:${queryParams}`);
     const [tasks] = await connection.query(query, queryParams); // クエリ実行
-    //console.log(`query:${query}`);
-    //console.log(tasks);
+    console.log(tasks);
     res.json(tasks);
-  } catch (err) {
-    console.error('Error retrieving tasks:', err);
-    res.status(500).send('Error retrieving tasks');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: '予期せぬエラーが発生しました。' });
   }
 });
 app.post('/removeClass', async (req, res) => {
