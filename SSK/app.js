@@ -419,9 +419,9 @@ app.get('/getTasks', async (req, res) => {
     }
 
     // ソート列を動的に生成
-    const sortColumn = sort === 'deadline' ? 'deadline' : `${sort} IS NULL, ${sort}`;
+    const sortColumn = sort === 'deadline' ? 'deadline IS NULL, deadline' : `${sort} IS NULL, ${sort} DESC`;
 
-    query += `ORDER BY ${sortColumn} DESC`;
+    query += `ORDER BY ${sortColumn}`;
     console.log(`query:${query}`);
     console.log(`queryParams:${queryParams}`);
     const [tasks] = await connection.query(query, queryParams); // クエリ実行

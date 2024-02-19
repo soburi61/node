@@ -28,7 +28,7 @@ table th {
 }
 
 .subject-name{
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight:bold;
     margin:0 0;
 }
@@ -61,11 +61,11 @@ ul{
 
 .increase-absences,.increase-tardies{
     font-size:0.7rem;
-    margin:0 1vw;
+    margin:0 0.4vw;
 }
 
 .class-container{
-    padding: 0 1vw;
+    padding: 0 2.5vw;
     text-align: center;
 }
 .flex {
